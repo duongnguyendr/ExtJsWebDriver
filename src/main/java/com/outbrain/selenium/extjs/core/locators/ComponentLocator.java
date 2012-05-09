@@ -98,7 +98,7 @@ public abstract class ComponentLocator {
   protected String waitCmpNotNull(final String fullExpr) {
     for (int second = 0;; second++) {
       if (second >= 5) {
-        throw new RuntimeException("Timeout");
+        throw new RuntimeException("Timeout: Unable to locate EXT.js component ["+fullExpr+"]");
       }
 
       try {
