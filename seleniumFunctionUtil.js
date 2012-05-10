@@ -94,7 +94,8 @@ function foundIn(component, xtype) {
  * @param {} xtype - component type like grid,textfield,combobox ....)
  * @return {}
  */
-var findComponentByText = function(text, xtype) {
+var findComponentByText = function(text, xtype, incInvisible) {
+	
 	var item = "";
 	var items = "";
 	Ext.ComponentMgr.all.find(function(c) {
@@ -120,7 +121,7 @@ var findComponentByText = function(text, xtype) {
 			default :
 				if (xtype) {
 					if (text) {
-						if ((c.isVisible())
+						if ((incInvisible || c.isVisible())
 								&& (rtrim(ltrim(c.text)) == text 
 								|| rtrim(ltrim(c.boxLabel)) == text
 								|| rtrim(ltrim(c.fieldLabel)) == text || rtrim(ltrim(c.title)) == text)
@@ -128,13 +129,13 @@ var findComponentByText = function(text, xtype) {
 										|| c.xtype == rtrim(ltrim(xtype)) || c.type == rtrim(ltrim(xtype))))
 							item += c.id+  ",";
 					} else {
-						if ((c.isVisible())
+						if ((incInvisible || c.isVisible())
 								&& (c.getXType() == rtrim(ltrim(xtype))
 										|| c.xtype == rtrim(ltrim(xtype)) || c.type == rtrim(ltrim(xtype))))
 							items += c.id + ",";
 					}
 				} else {
-					if ((c.isVisible())
+					if ((incInvisible || c.isVisible())
 							&& ((rtrim(ltrim(c.text)) == text
 									|| rtrim(ltrim(c.fieldLabel)) == text || rtrim(ltrim(c.title)) == text)))
 						item += c.id + ",";
