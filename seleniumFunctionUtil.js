@@ -94,8 +94,11 @@ function foundIn(component, xtype) {
  * @param {} xtype - component type like grid,textfield,combobox ....)
  * @return {}
  */
-var findComponentByText = function(text, xtype, incInvisible) {
-	
+var findComponentByText = function(text, xtype, incInvisible, debug) {
+	var timeStart;
+	if(debug){
+		timeStart = (new Date()).getTime();
+	}
 	var item = "";
 	var items = "";
 	Ext.ComponentMgr.all.find(function(c) {
@@ -143,6 +146,10 @@ var findComponentByText = function(text, xtype, incInvisible) {
 				break;
 		}
 	});
+	if(debug){
+		var dur = (new Date()).getTime() - timeStart;
+		ttp.logDebug("findComponent took: "+dur+"ms");
+	}
 	if (item) {
 		return rlastchar(item);
 	} else {
@@ -287,4 +294,10 @@ function verifyNoAjaxCalls() {
 		}
 	}
 	return true;
+}
+var tpp = {};
+ttp.logDebug = function(message){
+	if(console){
+		console.log(message)
+	}
 }
