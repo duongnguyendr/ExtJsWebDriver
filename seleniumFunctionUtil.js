@@ -295,7 +295,7 @@ function verifyNoAjaxCalls() {
 	}
 	return true;
 }
-var tpp = {};
+var ttp = {};
 ttp.logDebug = function(message){
 	if(console){
 		console.log(message)
