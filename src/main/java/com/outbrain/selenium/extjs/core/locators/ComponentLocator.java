@@ -23,6 +23,8 @@ public abstract class ComponentLocator {
    * Field textOrLable.
    */
   private String textOrLable;
+  
+  protected boolean incInvisible;
 
   /**
    * Method getComponentId.

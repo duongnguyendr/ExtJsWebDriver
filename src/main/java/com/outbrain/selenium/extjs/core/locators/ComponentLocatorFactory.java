@@ -89,5 +89,9 @@ public class ComponentLocatorFactory {
   public Selenium getSelenium() {
     return selenium;
   }
+	
+	public ComponentLocator createLocator(String textOrLable, Xtype xtype, boolean incInvisible) {
+		return new TextOrLableLocator(selenium, textOrLable, xtype, incInvisible);
+	}
 
 }

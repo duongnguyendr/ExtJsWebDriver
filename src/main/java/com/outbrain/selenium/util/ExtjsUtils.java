@@ -36,6 +36,7 @@ public class ExtjsUtils {
     RADIO,
     LABEL,
     MENU,
+    MENUITEM,
     SUPERBOXSELECT;
 
     public String getName() {

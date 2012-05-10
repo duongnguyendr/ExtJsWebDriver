@@ -2,6 +2,10 @@ package com.outbrain.selenium.extjs.components;
 
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.JavascriptExecutor;
+
 import com.outbrain.selenium.extjs.core.locators.ComponentLocator;
 import com.outbrain.selenium.util.ThreadUtils;
 import com.thoughtworks.selenium.Selenium;
@@ -172,10 +176,22 @@ public class Component {
    * @param expr String
    * @return String */
   protected String getEval(final String expr) {
+	System.out.println("getEval: "+expr);
     waitForFinshAjaxRequst();
     final String fullExpr = getExpression() + expr;
-
-    return selenium.getEval(fullExpr);
+    
+    
+    WebDriver driver = ((WrapsDriver) selenium).getWrappedDriver();
+    String result;
+    //long ts = System.currentTimeMillis();
+    if(driver != null){
+    	result = (String) ((JavascriptExecutor) driver).executeScript(fullExpr);
+    }else{
+    	result = selenium.getEval(fullExpr);
+    }
+    
+    //System.out.println("Selenium GetEval: "+(System.currentTimeMillis()-ts));
+    return result;
   }
 
   /**
@@ -183,6 +199,7 @@ public class Component {
    * @param expr String
    * @return String */
   protected String getCleanEval(final String expr) {
+	  System.out.println("getCleanEval: "+expr);
     waitForFinshAjaxRequst();
     return selenium.getEval(expr);
   }
@@ -192,6 +209,7 @@ public class Component {
    * @param expr String
    */
   protected void runScript(final String expr) {
+	  System.out.println("runScript: "+expr);
     waitForFinshAjaxRequst();
     final String fullExpr = getExpression() + expr;
     selenium.runScript(fullExpr);
@@ -202,6 +220,7 @@ public class Component {
    * @param expr String
    */
   protected void runCleanScript(final String expr) {
+	  System.out.println("runCleanScript: "+expr);
     waitForFinshAjaxRequst();
     selenium.runScript(expr);
   }
@@ -289,7 +308,7 @@ public class Component {
     }, TimeUnit.SECONDS, 15);
 
     if (!success) {
-      throw new RuntimeException("Timeout");
+      throw new RuntimeException("Timeout, could wait no longer for hidden component.");
     }
   }
 

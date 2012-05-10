@@ -26,6 +26,12 @@ public class TextOrLableLocator extends ComponentLocator {
     super(sel, xtype);
     textOrLable = nameOrLable;
   }
+  
+  public TextOrLableLocator(final Selenium sel, final String nameOrLable, final Xtype xtype, final boolean incInvisible) {
+	    super(sel, xtype);
+	    textOrLable = nameOrLable;
+	    this.incInvisible = incInvisible;
+	  }
 
   /**
    * 
@@ -47,10 +53,11 @@ public class TextOrLableLocator extends ComponentLocator {
   @Override
   public String getComponentId() {
     String[] component;
+    String incInv = (this.incInvisible)?"true":"false";
     if (textOrLable != null) {
-      component = waitCmpNotNull(String.format("window.findComponentByText('%s','%s')", textOrLable, getXtype().getName())).split(",");
+      component = waitCmpNotNull(String.format("window.findComponentByText('%s','%s',%s)", textOrLable, getXtype().getName(),incInv)).split(",");
     } else {
-      component = waitCmpNotNull(String.format("window.findComponentByText(null,'%s')", getXtype().getName())).split(",");
+      component = waitCmpNotNull(String.format("window.findComponentByText(null,'%s',%s)", getXtype().getName(),incInv)).split(",");
     }
 
     if (component.length == 0) {
