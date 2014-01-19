@@ -95,24 +95,6 @@
 		</dependency>
 		<!-- <dependency> <groupId>log4j</groupId> <artifactId>log4j</artifactId> 
 			<version>1.2.16</version> <scope>runtime</scope> </dependency> -->
+
 	</dependencies>
-	<profiles>
-		<profile>
-			<id>mavenRepo</id>
-			<repositories>
-				<repository>
-					<id>mavenCentral</id>
-					<name>Maven Repository Switchboard</name>
-					<layout>default</layout>
-					<url>http://repo1.maven.org/maven2</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-		</profile>
-	</profiles>
 </project>

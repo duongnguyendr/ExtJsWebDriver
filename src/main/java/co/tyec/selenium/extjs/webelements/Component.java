@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.seleniumemulation.JavascriptLibrary;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.outbrain.selenium.util.ThreadUtils;
@@ -165,11 +166,13 @@ public class Component {
 	}
 	
 	void fireEvent(String event) {
-		String fireEventCode = "function fireEvent(obj, evt){ " + "  var fireOnThis = obj;" + "  if( document.createEvent ) {"
-				+ "    var evObj = document.createEvent('MouseEvents');" + "    evObj.initEvent( evt, true, false );"
-				+ "    fireOnThis.dispatchEvent( evObj );" + "  } else if( document.createEventObject ) { /*IE*/"
-				+ "    var evObj = document.createEventObject();" + "    fireOnThis.fireEvent( 'on' + evt, evObj );" + "  }" + "}";
-		js.executeAsyncScript(String.format("%s fireEvent(arguments[0], %s", fireEventCode, event), topElement);
+		JavascriptLibrary lib = new JavascriptLibrary();
+		lib.callEmbeddedSelenium(driver, "triggerEvent", topElement, event);
+//		String fireEventCode = "function fireEvent(obj, evt){ " + "  var fireOnThis = obj;" + "  if( document.createEvent ) {"
+//				+ "    var evObj = document.createEvent('MouseEvents');" + "    evObj.initEvent( evt, true, false );"
+//				+ "    fireOnThis.dispatchEvent( evObj );" + "  } else if( document.createEventObject ) { /*IE*/"
+//				+ "    var evObj = document.createEventObject();" + "    fireOnThis.fireEvent( 'on' + evt, evObj );" + "  }" + "}";
+//		js.executeAsyncScript(String.format("%s fireEvent(arguments[0], %s", fireEventCode, event), topElement);
 	}
 	
 	/**
