@@ -3,12 +3,15 @@ package co.tyec.selenium.extjs.webelements;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import co.tyec.selenium.extjs.webelements.ExtJSQueryType;
-
 /**
  * @author Taylor York
  */
 public class Button extends Component {
+	String clickButton = "SExt.prototype.clickButton = function (query, uuid) {"
+			+ "var comp = this.findVisibleComponent(query);"
+			+ "var success = comp.btnEl.dom.click();"
+			+ "var writeDataToDiv(success, uuid);"
+			+ "}";
 	
 	public Button(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);

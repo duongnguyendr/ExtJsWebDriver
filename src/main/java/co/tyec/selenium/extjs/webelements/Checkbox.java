@@ -3,12 +3,15 @@ package co.tyec.selenium.extjs.webelements;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import co.tyec.selenium.extjs.webelements.ExtJSQueryType;
-
 /**
  * @author Taylor York
  */
 public class Checkbox extends Component {
+	String setCheckbox = "SExt.prototype.setCheckbox = function (query, value, uuid) {"
+			+ "var comp = this.findVisibleComponent(query);"
+			+ "var success = comp.setValue(value);"
+			+ "writeDataToDiv(success, uuid);"
+			+ "}";
 	
 	public Checkbox(WebDriver driver, WebElement topElement) {
 		super(driver, topElement);
@@ -22,7 +25,7 @@ public class Checkbox extends Component {
 	 * @return boolean
 	 */
 	public boolean isChecked() {
-		boolean ret = evalTrue("return el.checked;");
+		boolean ret = evalTrue("return extCmp.checked;");
 		return ret;
 	}
 	
@@ -33,10 +36,10 @@ public class Checkbox extends Component {
 	 *            boolean
 	 */
 	public void check(final boolean enable) {
-		if (enable != evalTrue("return el.getValue()")) {
+		if (enable != evalTrue("return extCmp.getValue()")) {
 			click();
 		}
-		execScriptOnExtJsComponent("el.setValue(" + enable + ")");
+		execScriptOnExtJsComponent("extCmp.setValue(" + enable + ")");
 	}
 	
 	/**

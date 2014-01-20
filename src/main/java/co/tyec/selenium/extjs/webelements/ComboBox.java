@@ -14,9 +14,19 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import co.tyec.selenium.extjs.webelements.ExtJSQueryType;
-
 public class ComboBox extends Component {
+	String setComboBox = "SExt.prototype.setComboBox = function (query, item, uuid) {"
+			+ "var success = false;"
+			+ "var comp = this.findVisibleComponent(query);"
+			+ "var store = comp.getStore();"
+			+ "var index = store.find(comp.displayField, item);"
+			+ "if ( index != -1 ) {"
+			+ "	comp.setValue(store.getAt(index));"
+			+ "	success = comp.fireEvent('select', comp, [store.getAt(index)]);"
+			+ "}"
+			+ "writeDataToDiv(success, uuid);"
+			+ "}";
+	
 	/**
 	 * @param elementContainer
 	 *            - locator of either parent element which wraps text input and drop down button or text input
@@ -45,7 +55,7 @@ public class ComboBox extends Component {
 	 * sets id of generated list with combobox options
 	 */
 	protected void setListDynId() {
-		listDynId = (String) js.executeScript(TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION + " el.expand(); return el.listKeyNav.boundList.id;",
+		listDynId = (String) js.executeScript(TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION + " extCmp.expand(); return extCmp.listKeyNav.boundList.id;",
 				getTextInput());
 	}
 	
@@ -109,11 +119,11 @@ public class ComboBox extends Component {
 	}
 	
 	private Boolean isDirty() {
-		return (Boolean) js.executeScript(TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION + " return el.isDirty();", getTextInput());
+		return (Boolean) js.executeScript(TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION + " return extCmp.isDirty();", getTextInput());
 	}
 	
 	private void collapseDropDown() {
-		js.executeScript(TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION + " el.collapse();", getTextInput());
+		js.executeScript(TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION + " extCmp.collapse();", getTextInput());
 	}
 	
 	/**
@@ -178,10 +188,10 @@ public class ComboBox extends Component {
 	 * @return String
 	 */
 	public String setValue(final String value) {
-		//focus();
-		evalTrue(".setValue( '" + value + "' )");
-		execScriptOnExtJsComponent("el.fireEvent( 'select', el, el.store.getById('" + value + "'), el.store.indexOfId('" + value + "') )");
-		//blur();
+		focus();
+		evalTrue("extCmp.setValue( '" + value + "' )");
+		execScriptOnExtJsComponent("extCmp.fireEvent( 'select', extCmp, extCmp.store.getById('" + value + "'), extCmp.store.indexOfId('" + value + "') )");
+		blur();
 		return value;
 	}
 	
@@ -193,8 +203,8 @@ public class ComboBox extends Component {
 	public void setValue(final String value, final String fieldName) {
 		//focus();
 		final Integer index = findInStore(fieldName, value);
-		execScriptOnExtJsComponent("el.setValue(el.store.getAt(" + index + ").get(el.valueField) )");
-		execScriptOnExtJsComponent("el.fireEvent( 'select', el, el.store.getAt(" + index + "), " + index + " )");
+		execScriptOnExtJsComponent("extCmp.setValue(extCmp.store.getAt(" + index + ").get(extCmp.valueField) )");
+		execScriptOnExtJsComponent("extCmp.fireEvent( 'select', extCmp, extCmp.store.getAt(" + index + "), " + index + " )");
 		//blur();
 	}
 	
@@ -206,7 +216,7 @@ public class ComboBox extends Component {
 	 * @return
 	 */
 	public int findInStore(final String fieldName, final String value) {
-		return (Integer) execScriptOnExtJsComponent(String.format("return el.store.find('%s','%s');", fieldName, value));
+		return (Integer) execScriptOnExtJsComponent(String.format("return extCmp.store.find('%s','%s');", fieldName, value));
 	}
 	
 	/**
@@ -217,8 +227,8 @@ public class ComboBox extends Component {
 	 */
 	public void select(final int i) {
 		//focus();
-		execScriptOnExtJsComponent("el.setValue(el.store.getAt(" + i + ").get(el.valueField) )");
-		execScriptOnExtJsComponent("el.fireEvent( 'select', el, el.store.getAt(" + i + "), " + i + " )");
+		execScriptOnExtJsComponent("extCmp.setValue(extCmp.store.getAt(" + i + ").get(extCmp.valueField) )");
+		execScriptOnExtJsComponent("extCmp.fireEvent( 'select', extCmp, extCmp.store.getAt(" + i + "), " + i + " )");
 		//blur();
 	}
 	
@@ -228,7 +238,7 @@ public class ComboBox extends Component {
 	 * @return Integer
 	 */
 	public Integer getCount() {
-		final String eval = (String) execScriptOnExtJsComponent("return el.store.getCount();");
+		final String eval = (String) execScriptOnExtJsComponent("return extCmp.store.getCount();");
 		if (eval == null || "null".equals(eval)) {
 			return null;
 		}
@@ -243,7 +253,7 @@ public class ComboBox extends Component {
 	 * @return String
 	 */
 	public String getRawValue() {
-		return (String) execScriptOnExtJsComponent(String.format("return el.getRawValue();"));
+		return (String) execScriptOnExtJsComponent(String.format("return extCmp.getRawValue();"));
 	}
 	
 	/**
@@ -252,7 +262,7 @@ public class ComboBox extends Component {
 	 * @return String
 	 */
 	public String getValue() {
-		return (String) execScriptOnExtJsComponent(String.format("return el.getValue();"));
+		return (String) execScriptOnExtJsComponent(String.format("return extCmp.getValue();"));
 	}
 	
 	/**
@@ -261,6 +271,6 @@ public class ComboBox extends Component {
 	 * @return String
 	 */
 	public Boolean reset() {
-		return (Boolean) execScriptOnExtJsComponent(String.format("return el.reset();"));
+		return (Boolean) execScriptOnExtJsComponent(String.format("return extCmp.reset();"));
 	}
 }

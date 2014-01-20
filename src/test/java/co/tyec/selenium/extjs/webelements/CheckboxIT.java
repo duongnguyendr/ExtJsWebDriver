@@ -62,7 +62,7 @@ public class CheckboxIT extends BaseTest {
 	@Test
 	public void selectExtJSButton() {
 		Button button = new Button(driver, ExtJSQueryType.ComponentQuery, "[itemId='pressed']");
-		
+		button.click();
 		// DomElement pressedDiv = page.domElementGet("DIV[@id='pressed']//*[@textContents='pressed: true']", "//");
 		WebElement pressedDiv = driver.findElement(By.xpath("//div[@id='pressed']//*[contains(text(), 'pressed: true')]"));
 		Assert.assertNotNull(pressedDiv);
@@ -72,20 +72,21 @@ public class CheckboxIT extends BaseTest {
 	@Test
 	public void selectExtJSComboBox() {
 		ComboBox comboBox = new ComboBox(driver, ExtJSQueryType.ComponentQuery, "[name='state']");
+		comboBox.setValue("Alaska");
 		
 		// DomElement stateInput = page.domElementGet("INPUT[@name='state']", "//");
 		WebElement stateInput = driver.findElement(By.name("state"));
 		Assert.assertNotNull(stateInput);
 		
-		// WebDriver get value
-		String selectedState = (String) stateInput.getAttribute("value");
-		Assert.assertNotNull(selectedState);
-		Assert.assertEquals(selectedState, "Alaska");
+//		// WebDriver get value
+//		String selectedState = (String) stateInput.getAttribute("value");
+//		Assert.assertNotNull(selectedState);
+//		Assert.assertEquals("Alaska", selectedState);
 		
 		// Via framework
-		selectedState = comboBox.getValue();
+		String selectedState = comboBox.getValue();
 		Assert.assertNotNull(selectedState);
-		Assert.assertEquals(selectedState, "Alaska");
+		Assert.assertEquals("Alaska", selectedState);
 	}
 	
 	@Test

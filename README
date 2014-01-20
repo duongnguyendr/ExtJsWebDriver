@@ -4,4 +4,12 @@ This project was forked from SeleniumExtend at https://github.com/asaflevy/Selen
 
  The new WebElement paradigm is taken from http://www.roboqa.net/2013/03/element-object-extjs-combobox.html
  
- Thought about looking into https://github.com/benelog/multiline to write JavaScript code.
+
+Things I need to decide
+ - JavaScript Code Managment - How should we store the JS code?
+ - * Should the JS just be saved in regular Strings? IE String code = "doSomeComplexCode()" + "lotsOfComplexLinesOfCode();
+ - * Or should we use another technique of Multi-Line Strings in JS like this - https://github.com/benelog/multiline
+ - * Or Should the JS be saved per file - /src/main/resources/.../findElement.js = "namespace.function = ...."
+ - * Or Should the JS be saved all together - /src/main/resources/.../namespace.js = "namespace = {function1... function2... function3...}"
+ 
+ 

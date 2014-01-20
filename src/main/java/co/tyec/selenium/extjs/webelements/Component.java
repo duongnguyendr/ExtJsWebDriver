@@ -15,21 +15,25 @@ public class Component {
 	
 	protected String extJsCmpId = null;
 	
+	private String defineSExt = "if(typeof SExt === \"undefined\") {SExt = function(){};};";
+	
 	JavascriptExecutor js;
 	
 	/**
 	 * This is meant to be a general way to convert a specific id to the general id ( Ex. td[@id="combobox-1009-bodyEl"] to comboBox-1009)
 	 */
 	protected String TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION = "var id = arguments[0].id"
-	// + ".replace('-inputEl', '')"
-	// + ".replace('-bodyEl','')"
+			// + ".replace('-inputEl', '')"
+			// + ".replace('-bodyEl','')"
 			+ ".replace(/-\\w*El$/,'')" /*-anythingEl */
-			+ ".replace('-triggerWrap','');" + "var extCmp = Ext.getCmp(id);";
+			+ ".replace('-triggerWrap','');"
+			+ "var extCmp = Ext.getCmp(id);";
 	// + "if(console && console.log){ console.log('arguments[0]: ' + arguments[0]) }"
 	// + "if(console && console.log){ console.log('id: ' + id) }"
 	// + "if(console && console.log){ console.log('el.xtype: ' + el.xtype) }";
 	
-	protected String TOP_ELEMENT_TO_EXT_JS_ID_FUNCTION = TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION +  ";return extCmp.getId()"; // should this be .id?
+	protected String TOP_ELEMENT_TO_EXT_JS_ID_FUNCTION = TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION
+			+ ";return extCmp.getId()"; // should this be .id?
 	
 	protected WebElement topElement;
 	
@@ -74,7 +78,9 @@ public class Component {
 			if ("true".equals(getCleanEval(expr))) {
 				return true;
 			}
-			if ("undefined".equals(getCleanEval(expr)) || "null".equals(getCleanEval(expr)) || "false".equals(getCleanEval(expr))) {
+			if ("undefined".equals(getCleanEval(expr))
+					|| "null".equals(getCleanEval(expr))
+					|| "false".equals(getCleanEval(expr))) {
 				return false;
 			}
 		} catch (final Exception e) {
@@ -138,9 +144,8 @@ public class Component {
 	}
 	
 	/**
-	 * This is used to run javascript scrits on the ExtJS Component.
-	 * For Example, execScriptOnExtJsComponent("return extCmp.getValue()"); will run the JavaScript method
-	 * getValue on the ExtJS component object.
+	 * This is used to run javascript scrits on the ExtJS Component. For Example, execScriptOnExtJsComponent("return extCmp.getValue()"); will run the
+	 * JavaScript method getValue on the ExtJS component object.
 	 * 
 	 * @param jsCode
 	 *            Javscript code to execute.
@@ -152,9 +157,8 @@ public class Component {
 	}
 	
 	/**
-	 * This is used to run javascript on the Top level HTML element of the Ext JS compoenet, such as the top level
-	 * DIV or TABLE.  For Example, execScriptOnTopLevelElement("return el.tagName"); will return the tagName for
-	 * the top level HTML element.
+	 * This is used to run javascript on the Top level HTML element of the Ext JS compoenet, such as the top level DIV or TABLE. For Example,
+	 * execScriptOnTopLevelElement("return el.tagName"); will return the tagName for the top level HTML element.
 	 * 
 	 * @param jsCode
 	 *            Javscript code to execute.
@@ -168,11 +172,6 @@ public class Component {
 	void fireEvent(String event) {
 		JavascriptLibrary lib = new JavascriptLibrary();
 		lib.callEmbeddedSelenium(driver, "triggerEvent", topElement, event);
-//		String fireEventCode = "function fireEvent(obj, evt){ " + "  var fireOnThis = obj;" + "  if( document.createEvent ) {"
-//				+ "    var evObj = document.createEvent('MouseEvents');" + "    evObj.initEvent( evt, true, false );"
-//				+ "    fireOnThis.dispatchEvent( evObj );" + "  } else if( document.createEventObject ) { /*IE*/"
-//				+ "    var evObj = document.createEventObject();" + "    fireOnThis.fireEvent( 'on' + evt, evObj );" + "  }" + "}";
-//		js.executeAsyncScript(String.format("%s fireEvent(arguments[0], %s", fireEventCode, event), topElement);
 	}
 	
 	/**
@@ -202,7 +201,8 @@ public class Component {
 	public String getComponentId() {
 		if (extJsCmpId == null) {
 			// well then we better have the WebElement!
-			if(topElement == null) throw new RuntimeException("Neither extJsCmpId or topElement has been set");
+			if (topElement == null)
+				throw new RuntimeException("Neither extJsCmpId or topElement has been set");
 			extJsCmpId = (String) js.executeScript(String.format("%s; return extCmp.getId();", TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION), topElement);
 		}
 		return extJsCmpId;
@@ -210,7 +210,6 @@ public class Component {
 	
 	/**
 	 * Returns the Ext.Element which encapsulates this Component.
-	 * 
 	 * 
 	 * @return String
 	 */
@@ -226,7 +225,7 @@ public class Component {
 	 * @return String
 	 */
 	protected String getEval(final String expr) {
-		final String fullExpr = String.format("return %s%s",getExpression(), expr);
+		final String fullExpr = String.format("return %s%s", getExpression(), expr);
 		
 		return getCleanEval(fullExpr);
 	}
@@ -246,7 +245,9 @@ public class Component {
 	 * @return String
 	 */
 	public String getXPath() {
-		return "//*[@id='" + getComponentId() + "']";
+		return "//*[@id='"
+				+ getComponentId()
+				+ "']";
 	}
 	
 	/**
@@ -261,7 +262,6 @@ public class Component {
 	/**
 	 * Returns this Component's xtype --hierarchy-- as a slash-delimited string ------------
 	 * 
-	 * 
 	 * @return List<String>
 	 */
 	public String getXTypes() {
@@ -274,7 +274,8 @@ public class Component {
 	 * @return boolean
 	 */
 	public boolean hidden() {
-		return evalTrue(" == null") || evalTrue(".hidden");
+		return evalTrue(" == null")
+				|| evalTrue(".hidden");
 	}
 	
 	/**
@@ -298,7 +299,6 @@ public class Component {
 	
 	/**
 	 * ExtJS Query that would be used in Ext.ComponentQuery.query("[name='myCheckbox']");
-	 * 
 	 */
 	protected WebElement setElementFromQuery(ExtJSQueryType queryType, String query) {
 		String queryScript = null;
@@ -306,7 +306,7 @@ public class Component {
 		if (queryType == null) {
 			return null;
 		} else if (queryType.equals(ExtJSQueryType.ComponentQuery)) {
-			queryScript = String.format("return Ext.ComponentQuery.query(\"%s\").getEl().dom;", query);
+			queryScript = String.format("%s; %s; return SExt.findVisibleComponentElement(\"%s\");", defineSExt, findVisibleComponentElement, query);
 		} else if (queryType.equals(ExtJSQueryType.GetCmp)) {
 			extJsCmpId = query;
 			queryScript = String.format("return Ext.getCmp(\"%s\").getEl().dom;", query);
@@ -395,7 +395,8 @@ public class Component {
 	 *            String
 	 */
 	protected void waitForEvalTrue(final String expr) {
-		final String fullExpr = getExpression() + expr;
+		final String fullExpr = getExpression()
+				+ expr;
 		
 		waitEvalTrue(fullExpr);
 	}
@@ -409,8 +410,11 @@ public class Component {
 		boolean ret = false;
 		long timeoutInSecond = 5;
 		long start = System.currentTimeMillis();
-		long end = start + timeoutInSecond * 1000;
-		while (System.currentTimeMillis() < end && ret == false) {
+		long end = start
+				+ timeoutInSecond
+				* 1000;
+		while (System.currentTimeMillis() < end
+				&& ret == false) {
 			
 			try {
 				String jsOut = (String) js.executeScript("return Ext.Ajax.isLoading();");
@@ -476,7 +480,6 @@ public class Component {
 	 * 
 	 * @param panelMaskId
 	 *            String
-	 * 
 	 * @return boolean
 	 */
 	protected boolean waitForTreeLoadingMask(final String panelMaskId) {
@@ -520,4 +523,33 @@ public class Component {
 	public void waitToLoad() {
 		waitForEvalTrue("el.disabled != true");
 	}
+	
+	String htmlEscape = "SExt.prototype.htmlEscape = function(str) {"
+			+ "return String(str) "
+			+ "	.replace(/&/g, '&amp;') "
+			+ "	.replace(/\"/g, '&quot;')"
+			+ "	.replace(/'/g, '&#39;')"
+			+ "	.replace(/</g, '&lt;')"
+			+ "	.replace(/>/g, '&gt;');"
+			+ "}";
+	
+	
+	String findVisibleComponentElement = "SExt.findVisibleComponentElement = function (query) {"
+			+ "  var queryResultArray = (window.frames[0] &&  window.frames[0].Ext) ? window.frames[0].Ext.ComponentQuery.query(query) : Ext.ComponentQuery.query(query);"
+			+ "  var single = null;"
+			+ "  Ext.Array.every(queryResultArray, function(comp) {"
+			+ "	     if (comp != null && comp.isVisible(true)){"
+			+ "	       single = comp;"
+			+ "	     }"
+			+ "	     return (single != null);" /* return false will stop looping through array */
+			+ "	   });"
+			+ "  var el = (single != null ? single.getEl().dom : null);"
+			+ "  return el;"
+			+ "}";
+	
+
+	
+
+	
+
 }
