@@ -69,36 +69,6 @@ public class ExtjsUtils {
 		return selenium.getEval(String.format("%s.getXType()", getComponentByTextOrLable(selenium, textOrLable, null)));
 	}
 	
-	public static void injectSupportingJavaScript(final Selenium selenium) {
-		
-		try {
-			final String[] resources = new String[] { "seleniumFunctionUtil.js" };
-			
-			try {
-				// JavascriptInjection.injectJavaScriptResourcesTogether( resources, new String[0], "ff-Extjs-javascript", selenium);
-				JavascriptInjection.injectJavaScriptResource(resources[0], "ff-aut-javascript-" + 0, selenium);
-			} catch (final Throwable e) {
-				
-				try {
-					for (int i = 0; i < resources.length; i++) {
-						JavascriptInjection.injectJavaScriptResource(resources[i], "ff-aut-javascript-" + i, selenium);
-					}
-				} catch (final Throwable e2) {
-					final StringBuilder emsg = new StringBuilder();
-					emsg.append("Unable to inject required Java Script as individual streams. ");
-					
-				}
-			}
-			
-		} catch (final Throwable e) {
-			if (RuntimeException.class.isInstance(e)) {
-				throw RuntimeException.class.cast(e);
-			} else {
-				throw new RuntimeException(e);
-			}
-		}
-	}
-	
 	public static boolean waitForAjaxRequests(final Selenium selenium) {
 		for (int second = 0; second <= 20; second++) {
 			

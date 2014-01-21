@@ -38,7 +38,7 @@ public class Button extends Component {
 	 * @throws InterruptedException
 	 */
 	public void clickAndWaitForAjaxValid() throws InterruptedException {
-		waitEvalTrue(".disabled == false");
+		waitExecScriptOnExtJsComponentTrue(".disabled == false");
 		click();
 		wait(2);
 		waitForFinishAjaxRequest();

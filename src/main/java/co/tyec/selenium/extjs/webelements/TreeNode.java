@@ -32,7 +32,7 @@ public class TreeNode extends Component {
 	 */
 	public TreeNode getRootNode() {
 		nodeExpression = ".getRootNode()";
-		getCleanEval(String.format("%s.%s", treeExpression, nodeExpression));
+		execScriptClean(String.format("%s.%s", treeExpression, nodeExpression));
 		return this;
 		
 	}
@@ -62,7 +62,7 @@ public class TreeNode extends Component {
 		if (nodeExpression.isEmpty() || nodeExpression.length() == 0) {
 			getRootNode();
 		}
-		getCleanEval(treeExpression + nodeExpression + ".findChild( 'name' ," + "\"<span style='color:black'>" + val + "</span>\" , true ).select()");
+		execScriptClean(treeExpression + nodeExpression + ".findChild( 'name' ," + "\"<span style='color:black'>" + val + "</span>\" , true ).select()");
 		return this;
 	}
 	
@@ -72,7 +72,7 @@ public class TreeNode extends Component {
 	 * @return - the count of node child
 	 */
 	public int getLength() {
-		return Integer.parseInt(getCleanEval(String.format("%s%s.childNodes.length", treeExpression, nodeExpression)));
+		return Integer.parseInt((String) execScriptClean(String.format("%s%s.childNodes.length", treeExpression, nodeExpression)));
 		
 	}
 	
@@ -85,7 +85,7 @@ public class TreeNode extends Component {
 	 * @return TreeNode
 	 */
 	public TreeNode select(final String id) {
-		getCleanEval(".getSelectionModel().select(" //
+		execScriptClean(".getSelectionModel().select(" //
 				+ getExpression() + ".nodeHash['" + id + "']" + //
 				")");
 		
@@ -101,7 +101,7 @@ public class TreeNode extends Component {
 	
 	public TreeNode getSelectedNode() {
 		nodeExpression = ".getSelectionModel().getSelectedNode()";
-		getCleanEval(treeExpression + nodeExpression);
+		execScriptClean(treeExpression + nodeExpression);
 		return this;
 	}
 	
@@ -112,7 +112,7 @@ public class TreeNode extends Component {
 	 */
 	public String getNodeUI() {
 		nodeUiExpression = nodeExpression + ".ui.getEl().firstChild";
-		return getCleanEval(treeExpression + nodeExpression + ".ui.getEl().firstChild");
+		return (String) execScriptClean(treeExpression + nodeExpression + ".ui.getEl().firstChild");
 	}
 	
 	/**
@@ -128,7 +128,7 @@ public class TreeNode extends Component {
 			getNodeUI();
 		}
 		
-		return getCleanEval(treeExpression + nodeUiExpression + ".childNodes[" + index + "].firstChild.innerHTML").replaceAll("\\<.*?>", "");
+		return ((String) execScriptClean(treeExpression + nodeUiExpression + ".childNodes[" + index + "].firstChild.innerHTML")).replaceAll("\\<.*?>", "");
 	}
 	
 	/**
@@ -161,7 +161,7 @@ public class TreeNode extends Component {
 	 */
 	public void expentNode() {
 		nodeExpression = ".getSelectionModel().getSelectedNode()";
-		getCleanEval(String.format("%s.expand()", nodeExpression));
+		execScriptClean(String.format("%s.expand()", nodeExpression));
 	}
 	
 	/**
@@ -169,7 +169,7 @@ public class TreeNode extends Component {
 	 */
 	public void expentRootNode() {
 		nodeExpression = ".getSelectionModel().getSelectedNode()";
-		getCleanEval(String.format("%s.expand()", getRootNode()));
+		execScriptClean(String.format("%s.expand()", getRootNode()));
 	}
 	
 	/**
@@ -177,7 +177,7 @@ public class TreeNode extends Component {
 	 */
 	public void collapseNode() {
 		nodeExpression = ".getSelectionModel().getSelectedNode()";
-		getCleanEval(String.format("%s.collapse()", nodeExpression));
+		execScriptClean(String.format("%s.collapse()", nodeExpression));
 	}
 	
 	/**
@@ -185,7 +185,7 @@ public class TreeNode extends Component {
 	 */
 	public void collapseRootNode() {
 		nodeExpression = ".getSelectionModel().getSelectedNode()";
-		getCleanEval(String.format("%s.collapse()", getRootNode()));
+		execScriptClean(String.format("%s.collapse()", getRootNode()));
 	}
 	
 	/**
@@ -238,7 +238,7 @@ public class TreeNode extends Component {
 	 * @param check
 	 */
 	public void toggleCheck(final Boolean check) {
-		getCleanEval(String.format("%s.getSelectionModel().getSelectedNode().getUI().toggleCheck(%s)", treeExpression, check));
+		execScriptClean(String.format("%s.getSelectionModel().getSelectedNode().getUI().toggleCheck(%s)", treeExpression, check));
 	}
 	
 	/**
@@ -251,7 +251,7 @@ public class TreeNode extends Component {
 	public void toggleCheck(final String attribute, final String value, final Boolean check) {
 		findChild(attribute, value);
 		getSelectedNode();
-		getCleanEval(String.format("%s%s%s.toggleCheck(%s)", treeExpression, nodeExpression, getUIfunction, check));
+		execScriptClean(String.format("%s%s%s.toggleCheck(%s)", treeExpression, nodeExpression, getUIfunction, check));
 	}
 	
 	/**
@@ -259,7 +259,7 @@ public class TreeNode extends Component {
 	 */
 	public void expand() {
 		getSelectedNode();
-		getCleanEval(String.format("%s%s.expand()", treeExpression, nodeExpression));
+		execScriptClean(String.format("%s%s.expand()", treeExpression, nodeExpression));
 	}
 	
 	/**
@@ -270,7 +270,7 @@ public class TreeNode extends Component {
 	 * @return
 	 */
 	public TreeNode findChild(final String attribute, final String value) {
-		getCleanEval(String.format("%s.getRootNode().findChild('%s','%s',true).select()", treeExpression, attribute, value));
+		execScriptClean(String.format("%s.getRootNode().findChild('%s','%s',true).select()", treeExpression, attribute, value));
 		return this;
 	}
 	

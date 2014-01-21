@@ -211,13 +211,13 @@ function getElementIdx(elt)
     return count;
 }
 
-function createXPathFromElement(elt)
+function createXPathFromElement(element)
 	{
 		var path = "";
-		for (; elt && elt.nodeType == 1; elt = elt.parentNode)
+		for (; element && element.nodeType == 1; element = element.parentNode)
 			{
-				idx = getElementIdx(elt);
-				xname = elt.tagName;
+				idx = getElementIdx(element);
+				xname = element.tagName;
 				xname += "[" + idx + "]";
 				path = "/" + xname + path;
 			}

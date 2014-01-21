@@ -32,7 +32,7 @@ public class Tree extends Component {
 	 * @return TreeNode
 	 */
 	public TreeNode select(final String id) {
-		getCleanEval(".getSelectionModel().select(" //
+		execScriptClean(".getSelectionModel().select(" //
 				+ getExpression() + ".nodeHash['" + id + "']" + //
 				")");
 		final TreeNode treeNode = new TreeNode(driver, ExtJSQueryType.Custom, getExpression());

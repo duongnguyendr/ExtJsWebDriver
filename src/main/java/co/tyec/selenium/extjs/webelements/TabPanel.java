@@ -45,7 +45,7 @@ public class TabPanel extends Component {
 	 * @param indexPanel
 	 */
 	public void setActiveTab(final int indexPanel) {
-		getCleanEval(String.format("%s.setActiveTab(%d)", getExpression(), indexPanel));
+		execScriptClean(String.format("%s.setActiveTab(%d)", getExpression(), indexPanel));
 	}
 	
 	/**
@@ -61,8 +61,8 @@ public class TabPanel extends Component {
 	 * @return - (int) the current index of selected Tab
 	 */
 	public Integer getCurentIndexTab() {
-		final String activeTabId = getCleanEval(String.format("%s.getActiveTab().getActiveTab().id", getExpression()));
-		return Integer.parseInt(getCleanEval(String.format("%s.items.indexOf('%s')", getExpression(), activeTabId)));
+		final String activeTabId = (String) execScriptClean(String.format("%s.getActiveTab().getActiveTab().id", getExpression()));
+		return Integer.parseInt((String) execScriptClean(String.format("%s.items.indexOf('%s')", getExpression(), activeTabId)));
 	}
 	
 	/**

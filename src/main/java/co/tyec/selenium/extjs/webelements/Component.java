@@ -7,33 +7,75 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.seleniumemulation.JavascriptLibrary;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.outbrain.selenium.util.ThreadUtils;
 
 public class Component {
-	protected WebDriver driver;
+	final static Logger logger = LoggerFactory.getLogger(Component.class);
 	
-	protected String extJsCmpId = null;
+	static final private String FUNCTION_DEFINE_SExt = "if(typeof SExt === \"undefined\") {SExt = function(){};};";
 	
-	private String defineSExt = "if(typeof SExt === \"undefined\") {SExt = function(){};};";
+	static final private String FUNCTION_findVisibleComponentElement = "SExt.findVisibleComponentElement = function (query) {"
+			+ "  var queryResultArray = (window.frames[0] &&  window.frames[0].Ext) ? window.frames[0].Ext.ComponentQuery.query(query) : Ext.ComponentQuery.query(query);"
+			+ "  var single = null;"
+			+ "  Ext.Array.every(queryResultArray, function(comp) {"
+			+ "	     if (comp != null && comp.isVisible(true)){"
+			+ "	       single = comp;"
+			+ "	     }"
+			+ "	     return (single != null);" /* return false will stop looping through array */
+			+ "	   });"
+			+ "  var el = (single != null ? single.getEl().dom : null);"
+			+ "  return el;"
+			+ "}";
 	
-	JavascriptExecutor js;
+	static final private String FUNCTION_htmlEscape = "SExt.prototype.htmlEscape = function(str) {"
+			+ "return String(str) "
+			+ "	.replace(/&/g, '&amp;') "
+			+ "	.replace(/\"/g, '&quot;')"
+			+ "	.replace(/'/g, '&#39;')"
+			+ "	.replace(/</g, '&lt;')"
+			+ "	.replace(/>/g, '&gt;');"
+			+ "}";
 	
 	/**
 	 * This is meant to be a general way to convert a specific id to the general id ( Ex. td[@id="combobox-1009-bodyEl"] to comboBox-1009)
 	 */
-	protected String TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION = "var id = arguments[0].id"
+	protected static final String FUNCTION_TOP_ELEMENT_TO_EXT_JS_CMP = "var id = el.id"
 			// + ".replace('-inputEl', '')"
 			// + ".replace('-bodyEl','')"
 			+ ".replace(/-\\w*El$/,'')" /*-anythingEl */
 			+ ".replace('-triggerWrap','');"
-			+ "var extCmp = Ext.getCmp(id);";
-	// + "if(console && console.log){ console.log('arguments[0]: ' + arguments[0]) }"
-	// + "if(console && console.log){ console.log('id: ' + id) }"
-	// + "if(console && console.log){ console.log('el.xtype: ' + el.xtype) }";
+			+ "var extCmp = Ext.getCmp(id);"
+			+ "SExt.log('el: ' + el) }"
+			+ "SExt.log('id: ' + id) }"
+			+ "SExt.log('el.xtype: ' + el.xtype) }";
 	
-	protected String TOP_ELEMENT_TO_EXT_JS_ID_FUNCTION = TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION
+	static private final String FUNCTION_TOP_ELEMENT_TO_EXT_JS_ID = FUNCTION_TOP_ELEMENT_TO_EXT_JS_CMP
 			+ ";return extCmp.getId()"; // should this be .id?
+	
+	protected WebDriver driver;
+	
+	protected String extJsCmpId = null;
+	
+	final String FUNCTION_getXPathTo = "function getXPathTo(element) {"
+			+ "    if (element.id!=='')"
+	    	+ "        return 'id(\"'+element.id+'\")';"
+			+ "    if (element===document.body)"
+	    	+ "        return element.tagName;"
+	    	+ "    var ix= 0;"
+	    	+ "    var siblings= element.parentNode.childNodes;"
+	    	+ "    for (var i= 0; i<siblings.length; i++) {"
+	    	+ "        var sibling= siblings[i];"
+	        + "        if (sibling===element)"
+	        + "            return getXPathTo(element.parentNode)+'/'+element.tagName+'['+(ix+1)+']';"
+	        + "        if (sibling.nodeType===1 && sibling.tagName===element.tagName)"
+	        + "            ix++;"
+	        + "    }"
+	        + "}";
+	
+	protected JavascriptExecutor js = null;
 	
 	protected WebElement topElement;
 	
@@ -72,15 +114,17 @@ public class Component {
 	 * @param expr
 	 *            String
 	 * @return boolean
+	 * @deprecated Remove all evalTrue/cleanEvalTrue methods
 	 */
+	@Deprecated
 	public boolean cleanEvalTrue(final String expr) {
 		try {
-			if ("true".equals(getCleanEval(expr))) {
+			if ("true".equals(execScriptClean(expr))) {
 				return true;
 			}
-			if ("undefined".equals(getCleanEval(expr))
-					|| "null".equals(getCleanEval(expr))
-					|| "false".equals(getCleanEval(expr))) {
+			if ("undefined".equals(execScriptClean(expr))
+					|| "null".equals(execScriptClean(expr))
+					|| "false".equals(execScriptClean(expr))) {
 				return false;
 			}
 		} catch (final Exception e) {
@@ -111,7 +155,9 @@ public class Component {
 	 * @param expr
 	 *            String
 	 * @return boolean
+	 * @deprecated Remove all evalTrue, etc. methods
 	 */
+	@Deprecated
 	public boolean evalNullComponent(final String expr) {
 		try {
 			return "null".equals(execScriptOnExtJsComponent(expr));
@@ -126,6 +172,7 @@ public class Component {
 	 * @param expr
 	 *            String
 	 * @return boolean
+	 * @deprecated remove all evalTrue, etc methods.
 	 */
 	protected boolean evalTrue(final String expr) {
 		try {
@@ -138,9 +185,21 @@ public class Component {
 			}
 			return jsBoolean == true;
 		} catch (final Exception e) {
-			System.out.println(e.getMessage());
+			logger.debug(e.getMessage());
 			return false;
 		}
+	}
+	
+	/**
+	 * Method getCleanEval.
+	 * 
+	 * @param expr
+	 *            String
+	 * @return String
+	 */
+	protected Object execScriptClean(final String expr) {
+		waitForFinishAjaxRequest();
+		return js.executeScript(expr);
 	}
 	
 	/**
@@ -153,7 +212,7 @@ public class Component {
 	 */
 	public Object execScriptOnExtJsComponent(String jsCode) {
 		String finalScript = String.format("var extCmp = Ext.getCmp('%s'); %s;", getComponentId(), jsCode);
-		return js.executeScript(finalScript);
+		return execScriptClean(finalScript);
 	}
 	
 	/**
@@ -164,9 +223,15 @@ public class Component {
 	 *            Javscript code to execute.
 	 * @return
 	 */
-	public Object execScriptOnTopLevelElement(String jsCode) {
+	protected Object execScriptOnTopLevelElement(String jsCode) {
+		return execScriptOnElement(jsCode, topElement);
+	}
+	
+
+	protected Object execScriptOnElement(String jsCode, WebElement element) {
 		String finalScript = String.format("var el = arguments[0]; %s;", jsCode);
-		return js.executeScript(finalScript, topElement);
+		waitForFinishAjaxRequest();
+		return js.executeScript(finalScript, element);
 	}
 	
 	void fireEvent(String event) {
@@ -176,21 +241,11 @@ public class Component {
 	
 	/**
 	 * Method focus.
+	 * @deprecated remove all event methods
 	 */
+	@Deprecated
 	public void focus() {
 		fireEvent("focus");
-	}
-	
-	/**
-	 * Method getCleanEval.
-	 * 
-	 * @param expr
-	 *            String
-	 * @return String
-	 */
-	protected String getCleanEval(final String expr) {
-		waitForFinishAjaxRequest();
-		return (String) js.executeScript(expr);
 	}
 	
 	/**
@@ -203,7 +258,8 @@ public class Component {
 			// well then we better have the WebElement!
 			if (topElement == null)
 				throw new RuntimeException("Neither extJsCmpId or topElement has been set");
-			extJsCmpId = (String) js.executeScript(String.format("%s; return extCmp.getId();", TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION), topElement);
+			//extJsCmpId = execScriptOnTopLevelElement(jsCode)
+			extJsCmpId = (String) js.executeScript(String.format("%s; return extCmp.getId();", FUNCTION_TOP_ELEMENT_TO_EXT_JS_CMP), topElement);
 		}
 		return extJsCmpId;
 	}
@@ -223,11 +279,13 @@ public class Component {
 	 * @param expr
 	 *            String
 	 * @return String
+	 * @deprecated Remove all evalTrue etc.
 	 */
+	@Deprecated
 	protected String getEval(final String expr) {
 		final String fullExpr = String.format("return %s%s", getExpression(), expr);
 		
-		return getCleanEval(fullExpr);
+		return (String) execScriptClean(fullExpr);
 	}
 	
 	/**
@@ -245,9 +303,7 @@ public class Component {
 	 * @return String
 	 */
 	public String getXPath() {
-		return "//*[@id='"
-				+ getComponentId()
-				+ "']";
+		return String.format("%s return getPathTo(%s", FUNCTION_getXPathTo, topElement);
 	}
 	
 	/**
@@ -306,7 +362,7 @@ public class Component {
 		if (queryType == null) {
 			return null;
 		} else if (queryType.equals(ExtJSQueryType.ComponentQuery)) {
-			queryScript = String.format("%s; %s; return SExt.findVisibleComponentElement(\"%s\");", defineSExt, findVisibleComponentElement, query);
+			queryScript = String.format("%s; %s; return SExt.findVisibleComponentElement(\"%s\");", FUNCTION_DEFINE_SExt, FUNCTION_findVisibleComponentElement, query);
 		} else if (queryType.equals(ExtJSQueryType.GetCmp)) {
 			extJsCmpId = query;
 			queryScript = String.format("return Ext.getCmp(\"%s\").getEl().dom;", query);
@@ -331,13 +387,29 @@ public class Component {
 		return !hidden();
 	}
 	
+	// /**
+	// * Returns this Component's xtype --hierarchy-- as a slash-delimited string ------------
+	// *
+	// *
+	// * @return List<String>
+	// */
+	// public List<String> getXTypes() {
+	// ArrayList<String> listString = new ArrayList<String>();
+	// @SuppressWarnings("unchecked")
+	// List<Object> listObject = (List<Object>) execScriptOnExtJsComponent("return el.getXTypes()");
+	// for(Object current : listObject){
+	// listString.add(String.valueOf(current));
+	// }
+	// return listString;
+	// }
+	
 	/**
 	 * Method waitEvalTrue.
 	 * 
 	 * @param fullExpr
 	 *            String
 	 */
-	protected void waitEvalTrue(final String fullExpr) {
+	protected void waitExecScriptOnExtJsComponentTrue(final String fullExpr) {
 		for (int second = 0;; second++) {
 			if (second >= 15) {
 				throw new RuntimeException("Timeout");
@@ -366,27 +438,11 @@ public class Component {
 		js.executeScript("window.Ext.Msg.getDialog()");
 		
 		try {
-			waitEvalTrue("window.Ext.Msg.isVisible() == false");
+			waitExecScriptOnExtJsComponentTrue("window.Ext.Msg.isVisible() == false");
 		} catch (final RuntimeException e) {
 			throw e;
 		}
 	}
-	
-	// /**
-	// * Returns this Component's xtype --hierarchy-- as a slash-delimited string ------------
-	// *
-	// *
-	// * @return List<String>
-	// */
-	// public List<String> getXTypes() {
-	// ArrayList<String> listString = new ArrayList<String>();
-	// @SuppressWarnings("unchecked")
-	// List<Object> listObject = (List<Object>) execScriptOnExtJsComponent("return el.getXTypes()");
-	// for(Object current : listObject){
-	// listString.add(String.valueOf(current));
-	// }
-	// return listString;
-	// }
 	
 	/**
 	 * Method waitForEvalTrue.
@@ -395,10 +451,9 @@ public class Component {
 	 *            String
 	 */
 	protected void waitForEvalTrue(final String expr) {
-		final String fullExpr = getExpression()
-				+ expr;
+		final String fullExpr = getExpression()	+ expr;
 		
-		waitEvalTrue(fullExpr);
+		waitExecScriptOnExtJsComponentTrue(fullExpr);
 	}
 	
 	/**
@@ -443,7 +498,6 @@ public class Component {
 	 *            String
 	 * @return boolean
 	 */
-	
 	protected boolean waitForGridLoadingMask(final String componentId) {
 		final boolean success = ThreadUtils.waitFor(new ThreadUtils.WaitCondition() {
 			@Override
@@ -524,32 +578,4 @@ public class Component {
 		waitForEvalTrue("el.disabled != true");
 	}
 	
-	String htmlEscape = "SExt.prototype.htmlEscape = function(str) {"
-			+ "return String(str) "
-			+ "	.replace(/&/g, '&amp;') "
-			+ "	.replace(/\"/g, '&quot;')"
-			+ "	.replace(/'/g, '&#39;')"
-			+ "	.replace(/</g, '&lt;')"
-			+ "	.replace(/>/g, '&gt;');"
-			+ "}";
-	
-	
-	String findVisibleComponentElement = "SExt.findVisibleComponentElement = function (query) {"
-			+ "  var queryResultArray = (window.frames[0] &&  window.frames[0].Ext) ? window.frames[0].Ext.ComponentQuery.query(query) : Ext.ComponentQuery.query(query);"
-			+ "  var single = null;"
-			+ "  Ext.Array.every(queryResultArray, function(comp) {"
-			+ "	     if (comp != null && comp.isVisible(true)){"
-			+ "	       single = comp;"
-			+ "	     }"
-			+ "	     return (single != null);" /* return false will stop looping through array */
-			+ "	   });"
-			+ "  var el = (single != null ? single.getEl().dom : null);"
-			+ "  return el;"
-			+ "}";
-	
-
-	
-
-	
-
 }

@@ -17,6 +17,7 @@ public class Panel extends Component {
 	 * Method collapse.
 	 */
 	public void collapse() {
+		
 		evalTrue(".collapse()");
 		waitForEvalTrue(".collapsed == true");
 	}

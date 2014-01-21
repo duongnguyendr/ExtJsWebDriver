@@ -234,7 +234,7 @@ public class Grid extends Component {
 		
 		final String colExp = String.format("window.Ext.fly(%s.view.getCell(%d,%d)).dom.textContent", gridExp, row, col);
 		
-		return getCleanEval(colExp);
+		return (String) execScriptClean(colExp);
 	}
 	
 	/**
@@ -290,7 +290,7 @@ public class Grid extends Component {
 	
 	public Grid editCellAndSetValue(final int row, final int col, final String value) {
 		
-		getCleanEval(String.format("%s.getColumnModel().getCellEditor(%d,%d).setValue('%s')", gridExp, col, row, value));
+		execScriptClean(String.format("%s.getColumnModel().getCellEditor(%d,%d).setValue('%s')", gridExp, col, row, value));
 		return this;
 	}
 	

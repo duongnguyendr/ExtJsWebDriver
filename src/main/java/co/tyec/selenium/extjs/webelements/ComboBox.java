@@ -13,9 +13,15 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ComboBox extends Component {
-	String setComboBox = "SExt.prototype.setComboBox = function (query, item, uuid) {"
+	final static Logger logger = LoggerFactory.getLogger(ComboBox.class);
+	
+	private static final By BOUND_LIST_LOCATOR = By.cssSelector("li.x-boundlist-item");
+	
+	static final String setComboBox = "SExt.prototype.setComboBox = function (query, item, uuid) {"
 			+ "var success = false;"
 			+ "var comp = this.findVisibleComponent(query);"
 			+ "var store = comp.getStore();"
@@ -27,43 +33,23 @@ public class ComboBox extends Component {
 			+ "writeDataToDiv(success, uuid);"
 			+ "}";
 	
+	private static final By TEXT_INPUT_LOCATOR = By.cssSelector("input.x-form-field.x-form-text");
+	
+	private WebElement input;
+	
+	private String listDynId = null;
+	
+	public ComboBox(WebDriver driver, ExtJSQueryType queryType, String query){
+		super(driver, queryType, query);
+	}
+	
 	/**
 	 * @param elementContainer
 	 *            - locator of either parent element which wraps text input and drop down button or text input
 	 */
 	public ComboBox(WebDriver driver, WebElement elementContainer) {
 		super(driver, elementContainer);
-	}
-	
-	public ComboBox(WebDriver driver, ExtJSQueryType queryType, String query){
-		super(driver, queryType, query);
-	}
-	
-	private static final By BOUND_LIST_LOCATOR = By.cssSelector("li.x-boundlist-item");
-	
-	private WebElement input;
-	
-	private String listDynId = null;
-	
-	private static final By TEXT_INPUT_LOCATOR = By.cssSelector("input.x-form-field.x-form-text");
-	
-	protected String getListDynId() {
-		return listDynId;
-	}
-	
-	/**
-	 * sets id of generated list with combobox options
-	 */
-	protected void setListDynId() {
-		listDynId = (String) js.executeScript(TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION + " extCmp.expand(); return extCmp.listKeyNav.boundList.id;",
-				getTextInput());
-	}
-	
-	/**
-	 * sends arrow key to text box
-	 */
-	public void retrieveOptions() {
-		sendKeys(Keys.ARROW_DOWN);
+		
 	}
 	
 	/**
@@ -118,12 +104,63 @@ public class ComboBox extends Component {
 		}
 	}
 	
-	private Boolean isDirty() {
-		return (Boolean) js.executeScript(TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION + " return extCmp.isDirty();", getTextInput());
+	public void clear() {
+		getTextInput().clear();
 	}
 	
 	private void collapseDropDown() {
-		js.executeScript(TOP_ELEMENT_TO_EXT_JS_CMP_FUNCTION + " extCmp.collapse();", getTextInput());
+		js.executeScript(FUNCTION_TOP_ELEMENT_TO_EXT_JS_CMP + " extCmp.collapse();", getTextInput());
+	}
+	
+	/**
+	 * Finds the index of the first matching Record in this store by a specific field value
+	 * 
+	 * @param fieldName
+	 * @param value
+	 * @return
+	 */
+	public int findInStore(final String fieldName, final String value) {
+		return (Integer) execScriptOnExtJsComponent(String.format("return extCmp.store.find('%s','%s');", fieldName, value));
+	}
+	
+	public String getAttribute(String arg0) {
+		return getTextInput().getAttribute(arg0);
+	}
+	
+	/**
+	 * Method getCount.
+	 * 
+	 * @return Integer
+	 */
+	public Integer getCount() {
+		final String eval = (String) execScriptOnExtJsComponent("return extCmp.store.getCount();");
+		if (eval == null || "null".equals(eval)) {
+			return null;
+		}
+		
+		return Integer.valueOf(eval);
+		
+	}
+	
+	/**
+	 * @return web element by dynamic id of reloaded list
+	 */
+	private WebElement getListContainer() {
+		if (getListDynId() == null) {
+			setListDynId();
+		}
+		return driver.findElement(By.id(getListDynId()));
+	}
+	
+	protected String getListDynId() {
+		return listDynId;
+	}
+	
+	/**
+	 * @return list of available option elements
+	 */
+	private List<WebElement> getOptionElements() {
+		return getListContainer().findElements(BOUND_LIST_LOCATOR);
 	}
 	
 	/**
@@ -141,20 +178,12 @@ public class ComboBox extends Component {
 	}
 	
 	/**
-	 * @return list of available option elements
+	 * return the selected value inner component
+	 * 
+	 * @return String
 	 */
-	private List<WebElement> getOptionElements() {
-		return getListContainer().findElements(BOUND_LIST_LOCATOR);
-	}
-	
-	/**
-	 * @return web element by dynamic id of reloaded list
-	 */
-	private WebElement getListContainer() {
-		if (getListDynId() == null) {
-			setListDynId();
-		}
-		return driver.findElement(By.id(getListDynId()));
+	public String getRawValue() {
+		return (String) execScriptOnExtJsComponent(String.format("return extCmp.getRawValue();"));
 	}
 	
 	private WebElement getTextInput() {
@@ -168,18 +197,61 @@ public class ComboBox extends Component {
 		return input;
 	}
 	
-	public void clear() {
-		getTextInput().clear();
+	/**
+	 * Returns the currently selected field value or empty string if no value is set.
+	 * 
+	 * @return String
+	 */
+	public String getValue() {
+		return (String) execScriptOnExtJsComponent(String.format("return extCmp.getValue();"));
+	}
+
+	private Boolean isDirty() {
+		return (Boolean) js.executeScript(FUNCTION_TOP_ELEMENT_TO_EXT_JS_CMP + " return extCmp.isDirty();", getTextInput());
 	}
 	
-	public String getAttribute(String arg0) {
-		return getTextInput().getAttribute(arg0);
+	/**
+	 * Resets the current field value to the originally-loaded value and clears any validation messages.
+	 * 
+	 * @return String
+	 */
+	public Boolean reset() {
+		return (Boolean) execScriptOnExtJsComponent(String.format("return extCmp.reset();"));
+	}
+	
+	/**
+	 * sends arrow key to text box
+	 */
+	public void retrieveOptions() {
+		sendKeys(Keys.ARROW_DOWN);
+	}
+	
+	/**
+	 * Method select.
+	 * 
+	 * @param i
+	 *            int
+	 */
+	public void select(final int i) {
+		//focus();
+		execScriptOnExtJsComponent("extCmp.setValue(extCmp.store.getAt(" + i + ").get(extCmp.valueField) )");
+		execScriptOnExtJsComponent("extCmp.fireEvent( 'select', extCmp, extCmp.store.getAt(" + i + "), " + i + " )");
+		//blur();
 	}
 	
 	public void sendKeys(CharSequence... arg0) {
 		getTextInput().sendKeys(arg0);
 	}
-
+	
+	/**
+	 * sets id of generated list with combobox options
+	 * Could the text input web element be a TextField component instead?
+	 */
+	protected void setListDynId() {
+		listDynId = (String) execScriptOnElement(FUNCTION_TOP_ELEMENT_TO_EXT_JS_CMP 
+				+ " extCmp.expand(); return extCmp.listKeyNav.boundList.id;", getTextInput());
+	}
+	
 	/**
 	 * Method setValue.
 	 * 
@@ -201,76 +273,10 @@ public class ComboBox extends Component {
 	 * @param fieldName
 	 */
 	public void setValue(final String value, final String fieldName) {
-		//focus();
+		focus();
 		final Integer index = findInStore(fieldName, value);
 		execScriptOnExtJsComponent("extCmp.setValue(extCmp.store.getAt(" + index + ").get(extCmp.valueField) )");
 		execScriptOnExtJsComponent("extCmp.fireEvent( 'select', extCmp, extCmp.store.getAt(" + index + "), " + index + " )");
-		//blur();
-	}
-	
-	/**
-	 * Finds the index of the first matching Record in this store by a specific field value
-	 * 
-	 * @param fieldName
-	 * @param value
-	 * @return
-	 */
-	public int findInStore(final String fieldName, final String value) {
-		return (Integer) execScriptOnExtJsComponent(String.format("return extCmp.store.find('%s','%s');", fieldName, value));
-	}
-	
-	/**
-	 * Method select.
-	 * 
-	 * @param i
-	 *            int
-	 */
-	public void select(final int i) {
-		//focus();
-		execScriptOnExtJsComponent("extCmp.setValue(extCmp.store.getAt(" + i + ").get(extCmp.valueField) )");
-		execScriptOnExtJsComponent("extCmp.fireEvent( 'select', extCmp, extCmp.store.getAt(" + i + "), " + i + " )");
-		//blur();
-	}
-	
-	/**
-	 * Method getCount.
-	 * 
-	 * @return Integer
-	 */
-	public Integer getCount() {
-		final String eval = (String) execScriptOnExtJsComponent("return extCmp.store.getCount();");
-		if (eval == null || "null".equals(eval)) {
-			return null;
-		}
-		
-		return Integer.valueOf(eval);
-		
-	}
-	
-	/**
-	 * return the selected value inner component
-	 * 
-	 * @return String
-	 */
-	public String getRawValue() {
-		return (String) execScriptOnExtJsComponent(String.format("return extCmp.getRawValue();"));
-	}
-	
-	/**
-	 * Returns the currently selected field value or empty string if no value is set.
-	 * 
-	 * @return String
-	 */
-	public String getValue() {
-		return (String) execScriptOnExtJsComponent(String.format("return extCmp.getValue();"));
-	}
-	
-	/**
-	 * Resets the current field value to the originally-loaded value and clears any validation messages.
-	 * 
-	 * @return String
-	 */
-	public Boolean reset() {
-		return (Boolean) execScriptOnExtJsComponent(String.format("return extCmp.reset();"));
+		blur();
 	}
 }
