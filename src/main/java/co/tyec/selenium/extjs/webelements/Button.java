@@ -40,8 +40,8 @@ public class Button extends ExtJSComponent {
 	 * @return boolean
 	 */
 	@Override
-	public boolean disabled() {
-		return (Boolean) execScriptOnExtJsCmp("return extCmp.disabled");
+	public Boolean disabled() {
+		return execScriptOnExtJsCmpReturnBoolean("return extCmp.disabled");
 	}
 	
 }

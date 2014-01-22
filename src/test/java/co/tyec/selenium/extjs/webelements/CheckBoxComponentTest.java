@@ -36,11 +36,10 @@ public class CheckBoxComponentTest {
 	@Test
 	public void testCheckBox() {
 		final Checkbox chk = Mockito.spy(new Checkbox(driver, ExtJSQueryType.ComponentQuery, "[@text='checkBox_title']"));
+		Mockito.doReturn("checkBox_id").when(chk).getComponentId();
 		chk.getComponentId();
-		Mockito.when(chk.getComponentId()).thenReturn("checkBox_id");
 		
 		assertEquals("checkbox id is incorrect", "checkBox_id", chk.getComponentId());
-		
 	}
 	
 }

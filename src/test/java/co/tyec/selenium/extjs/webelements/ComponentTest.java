@@ -24,7 +24,7 @@ public class ComponentTest {
 		driver = Mockito.mock(WebDriver.class, Mockito.withSettings().extraInterfaces(JavascriptExecutor.class));
 		js = (JavascriptExecutor) driver;
 		// Global Mocks
-		Mockito.when(((JavascriptExecutor) driver).executeScript(Mockito.contains("Ext.Ajax.isLoading()"))).thenReturn("false");
+		Mockito.when(((JavascriptExecutor) driver).executeScript(Mockito.contains("Ext.Ajax.isLoading()"))).thenReturn(Boolean.FALSE);
 	}
 	
 	/**
@@ -75,6 +75,9 @@ public class ComponentTest {
 	@Test
 	public void testComponent_id() throws Exception {
 		final ExtJSComponent result = new ExtJSComponent(driver, ExtJSQueryType.GetCmp, "cmp_id");
+		Mockito.when(js.executeScript(Mockito.contains("hidden"))).thenReturn(Boolean.FALSE);
+		Mockito.when(js.executeScript(Mockito.contains("disabled"))).thenReturn(Boolean.FALSE);
+		Mockito.when(js.executeScript(Mockito.contains("return extCmp == null"))).thenReturn(Boolean.FALSE);
 		
 		// add additional test code here
 		assertNotNull(result);
@@ -85,7 +88,6 @@ public class ComponentTest {
 		assertEquals("window.Ext.getCmp('cmp_id')", result.getExpression());
 		assertEquals(false, result.hidden());
 		assertEquals("cmp_id", result.getComponentId());
-		assertEquals("//*[@id='cmp_id']", result.getXPath());
 		assertEquals(true, result.waitForIsVisible());
 	}
 	
@@ -96,20 +98,10 @@ public class ComponentTest {
 	 */
 	@Test
 	public void testDisabled() throws Exception {
+		WebElement mockedEl = Mockito.mock(WebElement.class);
 		final ExtJSComponent cmp_result = new ExtJSComponent(driver, ExtJSQueryType.GetCmp, "cmp_id");
-		Mockito.when(js.executeScript("window.Ext.getCmp('cmp_id').disabled")).thenReturn("true");
+		Mockito.when(js.executeScript(Mockito.contains("disabled"), Mockito.anyVararg())).thenReturn(Boolean.TRUE);
 		assertTrue(cmp_result.disabled());
-	}
-	
-	/**
-	 * Run the boolean disabled() method test.
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void testDisabled_1() throws Exception {
-		final ExtJSComponent cmp_result = new ExtJSComponent(driver, ExtJSQueryType.GetCmp, "cmp_id");
-		assertEquals(false, cmp_result.disabled());
 	}
 	
 	/**
@@ -134,7 +126,7 @@ public class ComponentTest {
 	@Test
 	public void testEvalNullComponent_false() throws Exception {
 		final ExtJSComponent cmp_result = new ExtJSComponent(driver, ExtJSQueryType.GetCmp, "cmp_id");
-		Mockito.when(js.executeScript("window.Ext.getCmp('cmp_id')")).thenReturn("cmpid");
+		Mockito.when(js.executeScript(Mockito.contains("var extCmp = Ext.getCmp"))).thenReturn("something");
 		final boolean result = cmp_result.execScriptOnExtJSCmpReturnIsNull(cmp_result.getExpression());
 		
 		assertEquals(false, result);
@@ -150,20 +142,6 @@ public class ComponentTest {
 		final ExtJSComponent cmp_result = new ExtJSComponent(driver, ExtJSQueryType.GetCmp, "cmp_id");
 		final String result = cmp_result.getComponentId();
 		assertNotNull(result);
-	}
-	
-	/**
-	 * Run the String getComponentId() . Use method type locator
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void testGetComponentId_1() throws Exception {
-		Mockito.when(js.executeScript("window.findComponentByText('cmp_title','box')")).thenReturn("cmp_id");
-		final ExtJSComponent cmp_result = new ExtJSComponent(driver, ExtJSQueryType.ComponentQuery, "[@text='cmp_title']");
-		final String result = cmp_result.getComponentId();
-		assertNotNull(result);
-		assertEquals("cmp_id", cmp_result.getComponentId());
 	}
 	
 	/**

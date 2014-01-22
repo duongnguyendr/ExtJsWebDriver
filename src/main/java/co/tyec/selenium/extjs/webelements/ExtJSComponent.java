@@ -83,6 +83,9 @@ public class ExtJSComponent extends JSExtendedWebElement {
 	 */
 	public ExtJSComponent(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, convertQueryTypeAndQueryToScript(queryType, query));
+		if(queryType.equals(ExtJSQueryType.GetCmp)) {
+			this.extJsCmpId = query;
+		}
 	}
 	
 	/**
@@ -226,8 +229,8 @@ public class ExtJSComponent extends JSExtendedWebElement {
 	 * @return boolean
 	 */
 	public boolean hidden() {
-		return (Boolean) execScriptOnExtJsCmp("return extCmp == null")
-				|| (Boolean) execScriptOnExtJsCmp("return extCmp.hidden");
+		return execScriptOnExtJsCmpReturnBoolean("return extCmp == null")
+				|| execScriptOnExtJsCmpReturnBoolean("return extCmp.hidden");
 	}
 	
 	/**

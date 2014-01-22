@@ -76,8 +76,8 @@ public class JSExtendedWebElement {
 	 * 
 	 * @return boolean
 	 */
-	public boolean disabled() {
-		return (Boolean) execScriptOnTopLevelElement("return el.disabled");
+	public Boolean disabled() {
+		return execScriptOnTopLevelElementReturnBoolean("return el.disabled");
 	}
 	
 	/**
@@ -145,6 +145,19 @@ public class JSExtendedWebElement {
 	 */
 	protected Object execScriptOnTopLevelElement(String jsCode) {
 		return execScriptOnElement(jsCode, topElement);
+	}
+	
+	protected Boolean execScriptOnTopLevelElementReturnBoolean(String jsCode) {
+		try {
+			Object res = execScriptOnElement(jsCode, topElement);
+			if (Boolean.TRUE.equals(res)
+					|| Boolean.TRUE.equals(Boolean.parseBoolean((String) res))) {
+				return true;
+			}
+		} catch (final Exception e) {
+			return false;
+		}
+		return false;
 	}
 	
 	protected void setDriver(WebDriver driver) {
