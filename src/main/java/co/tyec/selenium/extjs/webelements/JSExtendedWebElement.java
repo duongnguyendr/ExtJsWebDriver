@@ -28,8 +28,10 @@ public class JSExtendedWebElement {
 			+ "	.replace(/</g, '&lt;')"
 			+ "	.replace(/>/g, '&gt;');"
 			+ "}";
-	
-	static protected long sleepInMillis = 0;
+	/**
+	 * NON ZERO VALUE for sleeping when waiting.
+	 */
+	static protected long sleepInMillis = 300;
 	
 	static protected long timeOutInSeconds = 5;
 	

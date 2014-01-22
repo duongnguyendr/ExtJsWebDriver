@@ -1,5 +1,6 @@
 package co.tyec.selenium.extjs.webelements;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -21,7 +22,7 @@ public class ButtonComponentTest {
 	@Test
 	public void nullTest() {
 		assertTrue(null == null);
-		assertTrue(!("null".equals(null)));
+		assertEquals(false, "null".equals(null));
 	}
 	
 	@Before
@@ -32,5 +33,12 @@ public class ButtonComponentTest {
 		Mockito.when(((JavascriptExecutor) driver).executeScript(Mockito.contains("Ext.Ajax.isLoading()"))).thenReturn("false");
 	}
 	
+	@Test
+	public void basicTest() {
+		final Button button = Mockito.spy(new Button(driver, ExtJSQueryType.ComponentQuery, "[@text='pressed']"));
+		Mockito.doReturn("_id").when(button).getComponentId();
+		String id = button.getComponentId();
+		assertEquals("id is incorrect", "_id", button.getComponentId());
+	}
 	
 }

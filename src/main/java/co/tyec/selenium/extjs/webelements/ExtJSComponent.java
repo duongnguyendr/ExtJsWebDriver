@@ -281,7 +281,26 @@ public class ExtJSComponent extends JSExtendedWebElement {
 	 */
 	@Override
 	protected boolean waitForFinishAjaxRequest() {
-		return waitForExecScriptToReturnTrue("return Ext.Ajax.isLoading();");
+		// DO NOT use helper methods. go straight to js
+		long start = System.currentTimeMillis();
+		long end = start + timeOutInSeconds * 1000;
+		boolean ret = false;
+		while(System.currentTimeMillis() <= end){
+			try {
+				if (Boolean.FALSE.equals(js.executeScript("return Ext.Ajax.isLoading()"))) {
+					ret = true;
+					break; // should not run the sleep below.
+				}
+			} catch (final Exception e) {
+				// ignore
+			}
+			try {
+				Thread.sleep(sleepInMillis);
+			} catch (final InterruptedException e) {
+				// ignore
+			}
+		}
+		return ret;
 	}
 	
 	/**
