@@ -22,17 +22,6 @@ public class Button extends ExtJSComponent {
 	}
 	
 	/**
-	 * return true if the component is disabled
-	 * 
-	 * 
-	 * @return boolean
-	 */
-	@Override
-	public boolean disabled() {
-		return (Boolean) execScriptOnExtJsCmp("return extCmp.disabled");
-	}
-	
-	/**
 	 * Method click and check if is no error after Ajax callback.
 	 * 
 	 * @throws InterruptedException
@@ -43,6 +32,16 @@ public class Button extends ExtJSComponent {
 		wait(2);
 		waitForFinishAjaxRequest();
 		waitForDialogFailure();
+	}
+	
+	/**
+	 * return true if the component is disabled
+	 * 
+	 * @return boolean
+	 */
+	@Override
+	public boolean disabled() {
+		return (Boolean) execScriptOnExtJsCmp("return extCmp.disabled");
 	}
 	
 }

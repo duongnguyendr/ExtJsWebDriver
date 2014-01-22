@@ -17,7 +17,6 @@ public class BaseTest {
 	 * To get the logs in your console, configure log4j to append to the console.
 	 * 
 	 * @author tyork
-	 *
 	 */
 	public class ExceptionLoggingRule implements TestRule {
 		Logger logger = LoggerFactory.getLogger(ExceptionLoggingRule.class);

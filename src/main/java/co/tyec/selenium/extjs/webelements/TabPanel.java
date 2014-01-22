@@ -8,15 +8,15 @@ import org.openqa.selenium.WebElement;
  */
 public class TabPanel extends ExtJSComponent {
 	
-	public TabPanel(WebDriver driver, ExtJSQueryType queryType, String query, final Integer tabIndex) {
-		super(driver, queryType, query);
-		this.tabIndex = tabIndex;
-	}
-	
 	/**
 	 * Field tabIndex.
 	 */
 	private int tabIndex;
+	
+	public TabPanel(WebDriver driver, ExtJSQueryType queryType, String query, final Integer tabIndex) {
+		super(driver, queryType, query);
+		this.tabIndex = tabIndex;
+	}
 	
 	public TabPanel(WebDriver driver, WebElement topElement, final Integer tabIndex) {
 		super(driver, topElement);
@@ -40,24 +40,6 @@ public class TabPanel extends ExtJSComponent {
 	}
 	
 	/**
-	 * Set active by given index of wanted panel
-	 * 
-	 * @param indexPanel
-	 */
-	public void setActiveTab(final int indexPanel) {
-		execScriptClean(String.format("%s.setActiveTab(%d)", getExpression(), indexPanel));
-	}
-	
-	/**
-	 * set Active tab after the search
-	 */
-	public void setAsActiveTab() {
-		setActiveTab(tabIndex);
-	}
-	
-	/**
-	 * 
-	 * 
 	 * @return - (int) the current index of selected Tab
 	 */
 	public Integer getCurentIndexTab() {
@@ -67,7 +49,6 @@ public class TabPanel extends ExtJSComponent {
 	
 	/**
 	 * return All id's of the current parent tabPanel
-	 * 
 	 * 
 	 * @return String[]
 	 */
@@ -83,6 +64,22 @@ public class TabPanel extends ExtJSComponent {
 	 */
 	public Integer getTabIndex() {
 		return tabIndex;
+	}
+	
+	/**
+	 * Set active by given index of wanted panel
+	 * 
+	 * @param indexPanel
+	 */
+	public void setActiveTab(final int indexPanel) {
+		execScriptClean(String.format("%s.setActiveTab(%d)", getExpression(), indexPanel));
+	}
+	
+	/**
+	 * set Active tab after the search
+	 */
+	public void setAsActiveTab() {
+		setActiveTab(tabIndex);
 	}
 	
 	/**

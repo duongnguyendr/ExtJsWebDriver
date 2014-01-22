@@ -17,7 +17,7 @@ public class Menu extends ExtJSComponent {
 	public Menu(WebDriver driver, WebElement topElement) {
 		super(driver, topElement);
 	}
-
+	
 	/**
 	 * Method click.
 	 * 
@@ -25,8 +25,14 @@ public class Menu extends ExtJSComponent {
 	 *            String
 	 */
 	public void click(final String itemKey) {
-		final String id = String.valueOf(execScriptOnExtJsCmp("el.items.items[" + getExpression() + ".items.indexOfKey('" + itemKey + "')].el.dom.id"));
-		driver.findElement(By.xpath("//*[@id='" + id + "']")).click();
+		final String id = String.valueOf(execScriptOnExtJsCmp("el.items.items["
+				+ getExpression()
+				+ ".items.indexOfKey('"
+				+ itemKey
+				+ "')].el.dom.id"));
+		driver.findElement(By.xpath("//*[@id='"
+				+ id
+				+ "']")).click();
 	}
 	
 	/**
@@ -38,7 +44,15 @@ public class Menu extends ExtJSComponent {
 	 *            String
 	 */
 	public void click(final String propName, final String propValue) {
-		final String id = String.valueOf(execScriptOnExtJsCmp("return extCmp.items.items[" + getExpression() + ".items.findIndex('" + propName + "', '" + propValue + "')].el.dom.id"));
-		topElement.findElement(By.xpath("//*[@id='" + id + "']")).click();
+		final String id = String.valueOf(execScriptOnExtJsCmp("return extCmp.items.items["
+				+ getExpression()
+				+ ".items.findIndex('"
+				+ propName
+				+ "', '"
+				+ propValue
+				+ "')].el.dom.id"));
+		topElement.findElement(By.xpath("//*[@id='"
+				+ id
+				+ "']")).click();
 	}
 }

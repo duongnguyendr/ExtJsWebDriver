@@ -31,7 +31,7 @@ public class JSExtendedWebElement {
 	
 	static protected long sleepInMillis = 0;
 	
-	static protected long timeOutInSeconds = 0;
+	static protected long timeOutInSeconds = 5;
 	
 	protected WebDriver driver;
 	
@@ -45,6 +45,7 @@ public class JSExtendedWebElement {
 	 * If a driver is set, but not a topElement, bad things could happen.
 	 * This method is only here so that the driver can be set, and then JS executed to find the top Element.
 	 * Maybe It should require a string to find the element?
+	 * 
 	 * @param driver
 	 */
 	public JSExtendedWebElement(WebDriver driver, String jsCode) {
@@ -67,7 +68,7 @@ public class JSExtendedWebElement {
 	public void click() {
 		topElement.click();
 	}
-
+	
 	/**
 	 * return true if the the component is disabled
 	 * 
@@ -88,7 +89,6 @@ public class JSExtendedWebElement {
 		waitForFinishAjaxRequest();
 		return js.executeScript(expr);
 	}
-	
 	
 	/**
 	 * Method cleanEvalTrue.
@@ -120,7 +120,8 @@ public class JSExtendedWebElement {
 	public boolean execScriptCleanReturnIsNull(final String expr) {
 		try {
 			Object out = execScriptClean(expr);
-			return out == null || "null".equals(out);
+			return out == null
+					|| "null".equals(out);
 		} catch (final Exception e) {
 			return false;
 		}
@@ -144,14 +145,13 @@ public class JSExtendedWebElement {
 		return execScriptOnElement(jsCode, topElement);
 	}
 	
-	
 	protected void setDriver(WebDriver driver) {
 		this.driver = driver;
 		this.js = (JavascriptExecutor) driver;
 		wait = new WebDriverWait(driver, timeOutInSeconds, sleepInMillis);
 	}
 	
-	private void setDriverAndFindElementByScript(WebDriver driver, String jsCode){
+	private void setDriverAndFindElementByScript(WebDriver driver, String jsCode) {
 		setDriver(driver);
 		WebElement element = null;
 		try {
@@ -195,7 +195,7 @@ public class JSExtendedWebElement {
 	}
 	
 	/**
-	 * Wait until all ajax requests are finished.  This should be specified by each framework.
+	 * Wait until all ajax requests are finished. This should be specified by each framework.
 	 * 
 	 * @return boolean return true if all ajax requests are finished.
 	 */

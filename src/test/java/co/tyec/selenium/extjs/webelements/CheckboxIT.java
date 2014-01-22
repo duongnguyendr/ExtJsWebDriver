@@ -17,17 +17,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CheckboxIT extends BaseTest {
+	static WebDriver driver;
+	
 	static String htmlTestLocation;
 	
 	static String locator = "//";
 	
-	static FirefoxProfile profile = new FirefoxProfile();
-	
-	static WebDriver driver;
-	
 	final static Logger logger = LoggerFactory.getLogger(CheckboxIT.class);
 	
-	public CheckboxIT() {
+	static FirefoxProfile profile = new FirefoxProfile();
+	
+	@AfterClass
+	public static void afterclass() {
+		try {
+			if (driver != null) {
+				driver.quit();
+			}
+		} catch (Exception e) {
+			logger.debug("Exception closing driver", e);
+		}
 	}
 	
 	@SuppressWarnings("unused")
@@ -35,7 +43,11 @@ public class CheckboxIT extends BaseTest {
 	public static void beforeClass() throws IOException {
 		URL res = CheckboxIT.class.getResource("ExtJSTest.html");
 		htmlTestLocation = CheckboxIT.class.getResource("ExtJSTest.html").toString();
-		logger.info("ExtJSTest Location: " + htmlTestLocation);
+		logger.info("ExtJSTest Location: "
+				+ htmlTestLocation);
+	}
+	
+	public CheckboxIT() {
 	}
 	
 	@Before
@@ -43,19 +55,9 @@ public class CheckboxIT extends BaseTest {
 		if (driver == null) {
 			logger.info("Starting Selenium FirefoxDriver");
 			driver = new FirefoxDriver(profile);
-			logger.info("Navigating to: " + htmlTestLocation);
+			logger.info("Navigating to: "
+					+ htmlTestLocation);
 			driver.navigate().to(htmlTestLocation);
-		}
-	}
-	
-	@AfterClass
-	public static void afterclass() {
-		try {
-			if(driver != null){
-				driver.quit();
-			}
-		} catch (Exception e) {
-			logger.debug("Exception closing driver", e);
 		}
 	}
 	
@@ -67,26 +69,6 @@ public class CheckboxIT extends BaseTest {
 		WebElement pressedDiv = driver.findElement(By.xpath("//div[@id='pressed']//*[contains(text(), 'pressed: true')]"));
 		Assert.assertNotNull(pressedDiv);
 		
-	}
-	
-	@Test
-	public void selectExtJSComboBox() {
-		ComboBox comboBox = new ComboBox(driver, ExtJSQueryType.ComponentQuery, "[name='state']");
-		comboBox.setValue("Alaska");
-		
-		// DomElement stateInput = page.domElementGet("INPUT[@name='state']", "//");
-		WebElement stateInput = driver.findElement(By.name("state"));
-		Assert.assertNotNull(stateInput);
-		
-//		// WebDriver get value
-//		String selectedState = (String) stateInput.getAttribute("value");
-//		Assert.assertNotNull(selectedState);
-//		Assert.assertEquals("Alaska", selectedState);
-		
-		// Via framework
-		String selectedState = comboBox.getValue();
-		Assert.assertNotNull(selectedState);
-		Assert.assertEquals("Alaska", selectedState);
 	}
 	
 	@Test
@@ -102,6 +84,26 @@ public class CheckboxIT extends BaseTest {
 		
 		checkbox.check(false);
 		Assert.assertFalse(checkbox.isChecked());
+	}
+	
+	@Test
+	public void selectExtJSComboBox() {
+		ComboBox comboBox = new ComboBox(driver, ExtJSQueryType.ComponentQuery, "[name='state']");
+		comboBox.setValue("Alaska");
+		
+		// DomElement stateInput = page.domElementGet("INPUT[@name='state']", "//");
+		WebElement stateInput = driver.findElement(By.name("state"));
+		Assert.assertNotNull(stateInput);
+		
+		// // WebDriver get value
+		// String selectedState = (String) stateInput.getAttribute("value");
+		// Assert.assertNotNull(selectedState);
+		// Assert.assertEquals("Alaska", selectedState);
+		
+		// Via framework
+		String selectedState = comboBox.getValue();
+		Assert.assertNotNull(selectedState);
+		Assert.assertEquals("Alaska", selectedState);
 	}
 	
 }

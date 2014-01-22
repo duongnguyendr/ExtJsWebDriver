@@ -13,20 +13,19 @@ public class Checkbox extends ExtJSComponent {
 			+ "writeDataToDiv(success, uuid);"
 			+ "}";
 	
-	public Checkbox(WebDriver driver, WebElement topElement) {
-		super(driver, topElement);
-	}
-	
 	public Checkbox(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);
 	}
 	
+	public Checkbox(WebDriver driver, WebElement topElement) {
+		super(driver, topElement);
+	}
+	
 	/**
-	 * @return boolean
+	 * check() sets checkbox to checked
 	 */
-	public boolean isChecked() {
-		boolean ret = (Boolean) execScriptOnExtJsCmp("return extCmp.checked;");
-		return ret;
+	public void check() {
+		check(true);
 	}
 	
 	/**
@@ -39,20 +38,21 @@ public class Checkbox extends ExtJSComponent {
 		if (enable != (Boolean) execScriptOnExtJsCmp("return extCmp.getValue()")) {
 			click();
 		}
-		execScriptOnExtJsCmp("extCmp.setValue(" + enable + ")");
+		execScriptOnExtJsCmp("extCmp.setValue("
+				+ enable
+				+ ")");
 	}
 	
 	/**
-	 * check() sets checkbox to checked
-	 * 
+	 * @return boolean
 	 */
-	public void check() {
-		check(true);
+	public boolean isChecked() {
+		boolean ret = (Boolean) execScriptOnExtJsCmp("return extCmp.checked;");
+		return ret;
 	}
 	
 	/**
 	 * uncheck() sets checkbox to unchecked
-	 * 
 	 */
 	public void uncheck() {
 		check(false);

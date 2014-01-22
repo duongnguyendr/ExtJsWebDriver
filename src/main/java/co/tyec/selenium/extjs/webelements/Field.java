@@ -49,7 +49,6 @@ public class Field extends ExtJSComponent {
 	 * 
 	 * @param err
 	 *            String
-	 * 
 	 * @return boolean
 	 */
 	public boolean hasErrorText(final String err) {
@@ -90,7 +89,6 @@ public class Field extends ExtJSComponent {
 	 * Sets a data value into the field and validates it. To set the value directly without validation
 	 * 
 	 * @param value
-	 * 
 	 * @return String
 	 */
 	public String setValue(final String value) {

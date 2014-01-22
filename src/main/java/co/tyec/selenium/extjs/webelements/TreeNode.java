@@ -25,135 +25,27 @@ public class TreeNode extends ExtJSComponent {
 	}
 	
 	/**
-	 * return the root node of given Tree
-	 * 
-	 * 
-	 * @return TreeNode
+	 * collapse the Selected node
 	 */
-	public TreeNode getRootNode() {
-		nodeExpression = ".getRootNode()";
-		execScriptClean(String.format("%s.%s", treeExpression, nodeExpression));
-		return this;
-		
-	}
-	
-	/**
-	 * Trying to search in tree and find a child with given value if found the node will be select
-	 * 
-	 * @param val
-	 * @return - selected node (if found one)
-	 */
-	public TreeNode findChild(final String val) {
-		if (nodeExpression.isEmpty() || nodeExpression.length() == 0) {
-			getRootNode();
-		}
-		execScriptOnExtJsCmp(nodeExpression + ".findChild( 'name' ,'" + val + "' , true ).select()");
-		return this;
-	}
-	
-	/**
-	 * Method findNodeGridChild.
-	 * 
-	 * @param val
-	 *            String
-	 * @return TreeNode
-	 */
-	public TreeNode findNodeGridChild(final String val) {
-		if (nodeExpression.isEmpty() || nodeExpression.length() == 0) {
-			getRootNode();
-		}
-		execScriptClean(treeExpression + nodeExpression + ".findChild( 'name' ," + "\"<span style='color:black'>" + val + "</span>\" , true ).select()");
-		return this;
-	}
-	
-	/**
-	 * return child count of selected node
-	 * 
-	 * @return - the count of node child
-	 */
-	public int getLength() {
-		return Integer.parseInt((String) execScriptClean(String.format("%s%s.childNodes.length", treeExpression, nodeExpression)));
-		
-	}
-	
-	/**
-	 * Method select.
-	 * 
-	 * @param id
-	 *            String
-	 * 
-	 * @return TreeNode
-	 */
-	public TreeNode select(final String id) {
-		execScriptClean(".getSelectionModel().select(" //
-				+ getExpression() + ".nodeHash['" + id + "']" + //
-				")");
-		
-		return getSelectedNode();
-	}
-	
-	/**
-	 * return the Selected node
-	 * 
-	 * 
-	 * @return TreeNode
-	 */
-	
-	public TreeNode getSelectedNode() {
+	public void collapseNode() {
 		nodeExpression = ".getSelectionModel().getSelectedNode()";
-		execScriptClean(treeExpression + nodeExpression);
-		return this;
+		execScriptClean(String.format("%s.collapse()", nodeExpression));
 	}
 	
 	/**
-	 * return node UI of the selected node
-	 * 
-	 * @return String
+	 * collapse the root Node
 	 */
-	public String getNodeUI() {
-		nodeUiExpression = nodeExpression + ".ui.getEl().firstChild";
-		return (String) execScriptClean(treeExpression + nodeExpression + ".ui.getEl().firstChild");
+	public void collapseRootNode() {
+		nodeExpression = ".getSelectionModel().getSelectedNode()";
+		execScriptClean(String.format("%s.collapse()", getRootNode()));
 	}
 	
 	/**
-	 * Method getCell.
-	 * 
-	 * @param index
-	 *            Integer
-	 * 
-	 * @return String
+	 * Expand this node. the node must be selected;
 	 */
-	public String getCell(final Integer index) {
-		if (nodeUiExpression.isEmpty()) {
-			getNodeUI();
-		}
-		
-		return ((String) execScriptClean(treeExpression + nodeUiExpression + ".childNodes[" + index + "].firstChild.innerHTML")).replaceAll("\\<.*?>", "");
-	}
-	
-	/**
-	 * return the value by given attribute (the node should be selected)
-	 * 
-	 * @param att
-	 * 
-	 * 
-	 * @return String
-	 */
-	public String getSelectedNodeAtt(final String att) {
-		return execScriptOnExtJsCmpReturnString("return extCmp.getSelectionModel().getSelectedNode().attributes." + att);
-		
-	}
-	
-	/**
-	 * return Node attribute
-	 * 
-	 * @param att
-	 * 
-	 * 
-	 * @return String
-	 */
-	public String getNodeAtt(final String att) {
-		return execScriptOnExtJsCmpReturnString(nodeExpression + ".attributes." + att);
+	public void expand() {
+		getSelectedNode();
+		execScriptClean(String.format("%s%s.expand()", treeExpression, nodeExpression));
 	}
 	
 	/**
@@ -173,19 +65,145 @@ public class TreeNode extends ExtJSComponent {
 	}
 	
 	/**
-	 * collapse the Selected node
+	 * Trying to search in tree and find a child with given value if found the node will be select
+	 * 
+	 * @param val
+	 * @return - selected node (if found one)
 	 */
-	public void collapseNode() {
-		nodeExpression = ".getSelectionModel().getSelectedNode()";
-		execScriptClean(String.format("%s.collapse()", nodeExpression));
+	public TreeNode findChild(final String val) {
+		if (nodeExpression.isEmpty()
+				|| nodeExpression.length() == 0) {
+			getRootNode();
+		}
+		execScriptOnExtJsCmp(nodeExpression
+				+ ".findChild( 'name' ,'"
+				+ val
+				+ "' , true ).select()");
+		return this;
 	}
 	
 	/**
-	 * collapse the root Node
+	 * find specific node in tree by given attribute and SELECT him
+	 * 
+	 * @param attribute
+	 * @param value
+	 * @return
 	 */
-	public void collapseRootNode() {
+	public TreeNode findChild(final String attribute, final String value) {
+		execScriptClean(String.format("%s.getRootNode().findChild('%s','%s',true).select()", treeExpression, attribute, value));
+		return this;
+	}
+	
+	/**
+	 * Method findNodeGridChild.
+	 * 
+	 * @param val
+	 *            String
+	 * @return TreeNode
+	 */
+	public TreeNode findNodeGridChild(final String val) {
+		if (nodeExpression.isEmpty()
+				|| nodeExpression.length() == 0) {
+			getRootNode();
+		}
+		execScriptClean(treeExpression
+				+ nodeExpression
+				+ ".findChild( 'name' ,"
+				+ "\"<span style='color:black'>"
+				+ val
+				+ "</span>\" , true ).select()");
+		return this;
+	}
+	
+	/**
+	 * Method getCell.
+	 * 
+	 * @param index
+	 *            Integer
+	 * @return String
+	 */
+	public String getCell(final Integer index) {
+		if (nodeUiExpression.isEmpty()) {
+			getNodeUI();
+		}
+		
+		return ((String) execScriptClean(treeExpression
+				+ nodeUiExpression
+				+ ".childNodes["
+				+ index
+				+ "].firstChild.innerHTML")).replaceAll("\\<.*?>", "");
+	}
+	
+	/**
+	 * return child count of selected node
+	 * 
+	 * @return - the count of node child
+	 */
+	public int getLength() {
+		return Integer.parseInt((String) execScriptClean(String.format("%s%s.childNodes.length", treeExpression, nodeExpression)));
+		
+	}
+	
+	/**
+	 * return Node attribute
+	 * 
+	 * @param att
+	 * @return String
+	 */
+	public String getNodeAtt(final String att) {
+		return execScriptOnExtJsCmpReturnString(nodeExpression
+				+ ".attributes."
+				+ att);
+	}
+	
+	/**
+	 * return node UI of the selected node
+	 * 
+	 * @return String
+	 */
+	public String getNodeUI() {
+		nodeUiExpression = nodeExpression
+				+ ".ui.getEl().firstChild";
+		return (String) execScriptClean(treeExpression
+				+ nodeExpression
+				+ ".ui.getEl().firstChild");
+	}
+	
+	/**
+	 * return the root node of given Tree
+	 * 
+	 * @return TreeNode
+	 */
+	public TreeNode getRootNode() {
+		nodeExpression = ".getRootNode()";
+		execScriptClean(String.format("%s.%s", treeExpression, nodeExpression));
+		return this;
+		
+	}
+	
+	/**
+	 * return the Selected node
+	 * 
+	 * @return TreeNode
+	 */
+	
+	public TreeNode getSelectedNode() {
 		nodeExpression = ".getSelectionModel().getSelectedNode()";
-		execScriptClean(String.format("%s.collapse()", getRootNode()));
+		execScriptClean(treeExpression
+				+ nodeExpression);
+		return this;
+	}
+	
+	/**
+	 * return the value by given attribute (the node should be selected)
+	 * 
+	 * @param att
+	 * @return String
+	 */
+	public String getSelectedNodeAtt(final String att) {
+		return execScriptOnExtJsCmpReturnString("return extCmp.getSelectionModel().getSelectedNode().attributes."
+				+ att);
+		
 	}
 	
 	/**
@@ -195,6 +213,14 @@ public class TreeNode extends ExtJSComponent {
 	 */
 	public boolean hasChildNodes() {
 		return execScriptOnExtJsCmpReturnBoolean(String.format("%s.hasChildNodes() ", nodeExpression));
+	}
+	
+	/**
+	 * @return
+	 */
+	public Boolean isChecked() {
+		return execScriptOnExtJsCmpReturnBoolean(String.format("%s.isChecked() ", treeExpression
+				+ getUIfunction));
 	}
 	
 	/**
@@ -225,11 +251,22 @@ public class TreeNode extends ExtJSComponent {
 	}
 	
 	/**
+	 * Method select.
 	 * 
-	 * @return
+	 * @param id
+	 *            String
+	 * @return TreeNode
 	 */
-	public Boolean isChecked() {
-		return execScriptOnExtJsCmpReturnBoolean(String.format("%s.isChecked() ", treeExpression + getUIfunction));
+	public TreeNode select(final String id) {
+		execScriptClean(".getSelectionModel().select(" //
+				+ getExpression()
+				+ ".nodeHash['"
+				+ id
+				+ "']"
+				+ //
+				")");
+		
+		return getSelectedNode();
 	}
 	
 	/**
@@ -252,26 +289,6 @@ public class TreeNode extends ExtJSComponent {
 		findChild(attribute, value);
 		getSelectedNode();
 		execScriptClean(String.format("%s%s%s.toggleCheck(%s)", treeExpression, nodeExpression, getUIfunction, check));
-	}
-	
-	/**
-	 * Expand this node. the node must be selected;
-	 */
-	public void expand() {
-		getSelectedNode();
-		execScriptClean(String.format("%s%s.expand()", treeExpression, nodeExpression));
-	}
-	
-	/**
-	 * find specific node in tree by given attribute and SELECT him
-	 * 
-	 * @param attribute
-	 * @param value
-	 * @return
-	 */
-	public TreeNode findChild(final String attribute, final String value) {
-		execScriptClean(String.format("%s.getRootNode().findChild('%s','%s',true).select()", treeExpression, attribute, value));
-		return this;
 	}
 	
 }

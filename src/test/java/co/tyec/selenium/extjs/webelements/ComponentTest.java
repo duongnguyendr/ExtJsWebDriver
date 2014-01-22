@@ -13,7 +13,6 @@ import org.openqa.selenium.WebElement;
 
 /**
  * The class <code>ComponentTest</code> contains tests for the class <code>{@link ExtJSComponent}</code>.
- * 
  */
 public class ComponentTest {
 	
@@ -29,38 +28,15 @@ public class ComponentTest {
 	}
 	
 	/**
-	 * Run the ExtJSComponent(Selenium,ComponentLocator) constructor test.
-	 * 
-	 * @throws Exception
-	 * 
-	 */
-	@Test
-	public void testComponent_id() throws Exception {
-		final ExtJSComponent result = new ExtJSComponent(driver, ExtJSQueryType.GetCmp, "cmp_id");
-		
-		// add additional test code here
-		assertNotNull(result);
-		assertEquals("cmp_id", result.getComponentId());
-		assertEquals(true, result.visible());
-		assertEquals(false, result.disabled());
-		assertEquals(false, result.isDisabled());
-		assertEquals("window.Ext.getCmp('cmp_id')", result.getExpression());
-		assertEquals(false, result.hidden());
-		assertEquals("cmp_id", result.getComponentId());
-		assertEquals("//*[@id='cmp_id']", result.getXPath());
-		assertEquals(true, result.waitForIsVisible());
-	}
-	
-	/**
 	 * Run the void blur() method test.
 	 * 
 	 * @throws Exception
 	 */
 	@Test
 	public void testBlur() throws Exception {
-		final ExtJSComponent result =  Mockito.spy(new ExtJSComponent(driver, ExtJSQueryType.GetCmp, "cmp_id"));
+		final ExtJSComponent result = Mockito.spy(new ExtJSComponent(driver, ExtJSQueryType.GetCmp, "cmp_id"));
 		result.blur();
- 
+		
 		Mockito.verify(result).fireEvent("blur");
 	}
 	
@@ -89,6 +65,28 @@ public class ComponentTest {
 		final ExtJSComponent cmp_result = new ExtJSComponent(driver, ExtJSQueryType.GetCmp, "null");
 		final boolean result = cmp_result.execScriptCleanReturnBoolean(cmp_result.getExpression());
 		assertEquals(false, result);
+	}
+	
+	/**
+	 * Run the ExtJSComponent(Selenium,ComponentLocator) constructor test.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testComponent_id() throws Exception {
+		final ExtJSComponent result = new ExtJSComponent(driver, ExtJSQueryType.GetCmp, "cmp_id");
+		
+		// add additional test code here
+		assertNotNull(result);
+		assertEquals("cmp_id", result.getComponentId());
+		assertEquals(true, result.visible());
+		assertEquals(false, result.disabled());
+		assertEquals(false, result.isDisabled());
+		assertEquals("window.Ext.getCmp('cmp_id')", result.getExpression());
+		assertEquals(false, result.hidden());
+		assertEquals("cmp_id", result.getComponentId());
+		assertEquals("//*[@id='cmp_id']", result.getXPath());
+		assertEquals(true, result.waitForIsVisible());
 	}
 	
 	/**
@@ -178,13 +176,13 @@ public class ComponentTest {
 		WebElement mockedEl = Mockito.mock(WebElement.class);
 		final ExtJSComponent cmp_result = new ExtJSComponent(driver, ExtJSQueryType.GetCmp, "cmp_id");
 		assertNotNull(cmp_result);
-		Mockito.when(((JavascriptExecutor)driver).executeScript(Mockito.contains("getEl().dom"))).thenReturn(mockedEl);
+		Mockito.when(((JavascriptExecutor) driver).executeScript(Mockito.contains("getEl().dom"))).thenReturn(mockedEl);
 		assertEquals(mockedEl, cmp_result.getElDom());
 	}
 	
 	@Test
 	public void waitForFinishAjaxRequestTest() {
-		final ExtJSComponent cmp_result = new ExtJSComponent(driver, ExtJSQueryType.GetCmp, "cmp_id");		
+		final ExtJSComponent cmp_result = new ExtJSComponent(driver, ExtJSQueryType.GetCmp, "cmp_id");
 		assertTrue(cmp_result.waitForFinishAjaxRequest());
 	}
 }

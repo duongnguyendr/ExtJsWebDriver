@@ -5,20 +5,21 @@ import org.openqa.selenium.WebElement;
 
 public class TriggerField extends ExtJSComponent {
 	
-	public TriggerField(WebDriver driver, ExtJSQueryType queryType, String query) {
-		super(driver, queryType, query);
-		trigger = new Button(driver, queryType, query);
-	}
-
-	public TriggerField(WebDriver driver, WebElement topElement) {
-		super(driver, topElement);
-		trigger = new Button(driver, ExtJSQueryType.GetCmp, getExpression() + ".trigger");
-	}
-
 	/**
 	 * Field trigger.
 	 */
 	private Button trigger;
+	
+	public TriggerField(WebDriver driver, ExtJSQueryType queryType, String query) {
+		super(driver, queryType, query);
+		trigger = new Button(driver, queryType, query);
+	}
+	
+	public TriggerField(WebDriver driver, WebElement topElement) {
+		super(driver, topElement);
+		trigger = new Button(driver, ExtJSQueryType.GetCmp, getExpression()
+				+ ".trigger");
+	}
 	
 	/**
 	 * Method clickTrigger.

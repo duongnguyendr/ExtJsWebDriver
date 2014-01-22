@@ -9,7 +9,7 @@ public class Window extends BasicForm {
 	public Window(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);
 	}
-
+	
 	public Window(WebDriver driver, WebElement topElement) {
 		super(driver, topElement);
 	}

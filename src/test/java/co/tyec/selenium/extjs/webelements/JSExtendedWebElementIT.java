@@ -17,41 +17,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JSExtendedWebElementIT extends BaseTest {
+	static WebDriver driver;
+	
 	static String htmlTestLocation;
 	
 	static String locator = "//";
 	
-	static FirefoxProfile profile = new FirefoxProfile();
-	
-	static WebDriver driver;
-	
 	final static Logger logger = LoggerFactory.getLogger(JSExtendedWebElementIT.class);
 	
-	public JSExtendedWebElementIT() {
-	}
-	
-	@SuppressWarnings("unused")
-	@BeforeClass
-	public static void beforeClass() throws IOException {
-		URL res = JSExtendedWebElementIT.class.getResource("ExtJSTest.html");
-		htmlTestLocation = JSExtendedWebElementIT.class.getResource("ExtJSTest.html").toString();
-		logger.info("ExtJSTest Location: " + htmlTestLocation);
-	}
-	
-	@Before
-	public void beforeMethod() {
-		if (driver == null) {
-			logger.info("Starting Selenium FirefoxDriver");
-			driver = new FirefoxDriver(profile);
-			logger.info("Navigating to: " + htmlTestLocation);
-			driver.navigate().to(htmlTestLocation);
-		}
-	}
+	static FirefoxProfile profile = new FirefoxProfile();
 	
 	@AfterClass
 	public static void afterclass() {
 		try {
-			if(driver != null){
+			if (driver != null) {
 				driver.quit();
 			}
 		} catch (Exception e) {
@@ -59,21 +38,54 @@ public class JSExtendedWebElementIT extends BaseTest {
 		}
 	}
 	
-	@Test
-	public void simpleJSReturnTest() {
+	@SuppressWarnings("unused")
+	@BeforeClass
+	public static void beforeClass() throws IOException {
+		URL res = JSExtendedWebElementIT.class.getResource("ExtJSTest.html");
+		htmlTestLocation = JSExtendedWebElementIT.class.getResource("ExtJSTest.html").toString();
+		logger.info("ExtJSTest Location: "
+				+ htmlTestLocation);
+	}
+	
+	public JSExtendedWebElementIT() {
+	}
+	
+	@Before
+	public void beforeMethod() {
+		if (driver == null) {
+			logger.info("Starting Selenium FirefoxDriver");
+			driver = new FirefoxDriver(profile);
+			logger.info("Navigating to: "
+					+ htmlTestLocation);
+			driver.navigate().to(htmlTestLocation);
+		}
+	}
+	
+	@Test(expected = ClassCastException.class)
+	public void classCastExceptionForInteger() {
+		// You cannot cast an output to Integer.
 		WebElement el = driver.findElement(By.xpath("//body"));
 		JSExtendedWebElement jsEl = new JSExtendedWebElement(driver, el);
-		// No return. This test proves that you need a return.
-		Object ret = jsEl.execScriptClean("1;");
-		Assert.assertEquals(null, ret);
+		Integer retInt = (Integer) jsEl.execScriptClean("return 1+1;");
+	}
+	
+	@Test(expected = ClassCastException.class)
+	public void classCastExceptionForString() {
+		// You cannot cast an output to String.
+		WebElement el = driver.findElement(By.xpath("//body"));
+		JSExtendedWebElement jsEl = new JSExtendedWebElement(driver, el);
+		String retString = (String) jsEl.execScriptClean("return 1+1;");
+	}
+	
+	@Test
+	public void elementConstructorTest() {
+		WebElement el = driver.findElement(By.xpath("//body"));
+		JSExtendedWebElement jsEl = new JSExtendedWebElement(driver, el);
+		Assert.assertNotNull(jsEl);
 		
-		// With return, no Semicolon. This test proves that you do NOT need a semi colon.
-		ret = jsEl.execScriptClean("return \"something\"");
-		Assert.assertEquals("something", ret);
-
-		// With return, and semicolon
-		ret = jsEl.execScriptClean("return \"something\";");
-		Assert.assertEquals("something", ret);	
+		Object ret = null;
+		ret = jsEl.execScriptOnTopLevelElement("return el.tagName");
+		Assert.assertEquals("BODY", String.valueOf(ret).toUpperCase()); // firefox does all upper case. i dont care.
 	}
 	
 	@Test
@@ -87,20 +99,13 @@ public class JSExtendedWebElementIT extends BaseTest {
 		Assert.assertEquals(Long.valueOf("2"), retLong);
 	}
 	
-	@Test(expected=ClassCastException.class)
-	public void classCastExceptionForInteger() {
-		// You cannot cast an output to Integer.
+	@Test
+	public void noClassCastExceptionForLongValueOf() {
+		// You cannot parse the output with Long.valueOf, but you can convert to string first (but you should just
+		// cast to long if it's castable.
 		WebElement el = driver.findElement(By.xpath("//body"));
 		JSExtendedWebElement jsEl = new JSExtendedWebElement(driver, el);
-		Integer retInt = (Integer) jsEl.execScriptClean("return 1+1;");
-	}
-	
-	@Test(expected=ClassCastException.class)
-	public void classCastExceptionForString() {
-		// You cannot cast an output to String.
-		WebElement el = driver.findElement(By.xpath("//body"));
-		JSExtendedWebElement jsEl = new JSExtendedWebElement(driver, el);
-		String retString = (String) jsEl.execScriptClean("return 1+1;");
+		Long retString = Long.valueOf(String.valueOf(jsEl.execScriptClean("return 1+1;")));
 	}
 	
 	@Test
@@ -112,23 +117,15 @@ public class JSExtendedWebElementIT extends BaseTest {
 	}
 	
 	@Test
-	public void noClassCastExceptionForLongValueOf() {
-		// You cannot parse the output with Long.valueOf, but you can convert to string first (but you should just
-		// cast to long if it's castable.
-		WebElement el = driver.findElement(By.xpath("//body"));
-		JSExtendedWebElement jsEl = new JSExtendedWebElement(driver, el);
-		Long retString = Long.valueOf(String.valueOf(jsEl.execScriptClean("return 1+1;")));
-	}
-	
-	@Test
-	public void returnIsNullTest() {
-		WebElement el = driver.findElement(By.xpath("//body"));
-		JSExtendedWebElement jsEl = new JSExtendedWebElement(driver, el);
-		Object ret = jsEl.execScriptCleanReturnIsNull("");
-		Assert.assertNull(ret);
+	public void queryConstructorTest() {
+		// query to find the body tag
+		String query = "var arr = document.getElementsByTagName('body'); if(arr.length >=0){ return arr[0]; } else { return arr; }";
+		JSExtendedWebElement jsEl = new JSExtendedWebElement(driver, query);
+		Assert.assertNotNull(jsEl);
 		
-		ret = jsEl.execScriptCleanReturnIsNull("return 1;");
-		Assert.assertNotNull(ret);
+		Object ret = null;
+		ret = jsEl.execScriptOnTopLevelElement("return el.tagName");
+		Assert.assertEquals("BODY", String.valueOf(ret).toUpperCase()); // firefox does all upper case. i dont care.
 	}
 	
 	@Test
@@ -159,25 +156,30 @@ public class JSExtendedWebElementIT extends BaseTest {
 	}
 	
 	@Test
-	public void queryConstructorTest() {
-		// query to find the body tag
-		String query = "var arr = document.getElementsByTagName('body'); if(arr.length >=0){ return arr[0]; } else { return arr; }";
-		JSExtendedWebElement jsEl = new JSExtendedWebElement(driver, query);
-		Assert.assertNotNull(jsEl);
+	public void returnIsNullTest() {
+		WebElement el = driver.findElement(By.xpath("//body"));
+		JSExtendedWebElement jsEl = new JSExtendedWebElement(driver, el);
+		Object ret = jsEl.execScriptCleanReturnIsNull("");
+		Assert.assertNull(ret);
 		
-		Object ret = null;
-		ret = jsEl.execScriptOnTopLevelElement("return el.tagName");
-		Assert.assertEquals("BODY", String.valueOf(ret).toUpperCase()); // firefox does all upper case. i dont care.
+		ret = jsEl.execScriptCleanReturnIsNull("return 1;");
+		Assert.assertNotNull(ret);
 	}
 	
 	@Test
-	public void elementConstructorTest() {
+	public void simpleJSReturnTest() {
 		WebElement el = driver.findElement(By.xpath("//body"));
 		JSExtendedWebElement jsEl = new JSExtendedWebElement(driver, el);
-		Assert.assertNotNull(jsEl);
+		// No return. This test proves that you need a return.
+		Object ret = jsEl.execScriptClean("1;");
+		Assert.assertEquals(null, ret);
 		
-		Object ret = null;
-		ret = jsEl.execScriptOnTopLevelElement("return el.tagName");		
-		Assert.assertEquals("BODY", String.valueOf(ret).toUpperCase()); // firefox does all upper case. i dont care.
+		// With return, no Semicolon. This test proves that you do NOT need a semi colon.
+		ret = jsEl.execScriptClean("return \"something\"");
+		Assert.assertEquals("something", ret);
+		
+		// With return, and semicolon
+		ret = jsEl.execScriptClean("return \"something\";");
+		Assert.assertEquals("something", ret);
 	}
 }

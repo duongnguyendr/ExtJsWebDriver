@@ -8,16 +8,23 @@ import com.thoughtworks.selenium.Selenium;
 public class ExtjsUtils {
 	
 	public static enum Xtype {
-		NUMBERFIELD, BOX, DATEFIELD, BUTTON, BUTTONGROUP, COLORPALETTE, COMPONENT, CONTAINER, CYCLE, DATAVIEW, DATEPICKER, EDITOR, EDITORGRID, FLASH, GRID, LISTVIEW, PANEL, WINDOW, SPLITBUTTON, TABPANEL, TREEPANEL, VIEWPORT, TREEGRID, TEXTFIELD, TEXTAREA, COMBO, CHECKBOX, TRIGGER, RADIO, LABEL, MENU, MENUITEM, SUPERBOXSELECT;
+		BOX, BUTTON, BUTTONGROUP, CHECKBOX, COLORPALETTE, COMBO, COMPONENT, CONTAINER, CYCLE, DATAVIEW, DATEFIELD, DATEPICKER, EDITOR, EDITORGRID, FLASH, GRID, LABEL, LISTVIEW, MENU, MENUITEM, NUMBERFIELD, PANEL, RADIO, SPLITBUTTON, SUPERBOXSELECT, TABPANEL, TEXTAREA, TEXTFIELD, TREEGRID, TREEPANEL, TRIGGER, VIEWPORT, WINDOW;
 		
 		public String getName() {
 			return toString().toLowerCase();
 		}
 	}
 	
-	public static String getComponentXpath(final WebDriver driver, final String element) {
-		JavascriptExecutor js = (JavascriptExecutor) driver;
-		return (String) js.executeScript(String.format("return window.createXPathFromElement(%s)", element));
+	/**
+	 * return reference to extjs component
+	 * 
+	 * @param componentId
+	 * @return
+	 */
+	public static String getComponentById(final String componentId) {
+		return "window.Ext.getCmp('"
+				+ componentId
+				+ "')";
 	}
 	
 	public static String getComponentByTextOrLable(final Selenium selenium, final String textOrLable, final Xtype xtype) {
@@ -55,18 +62,13 @@ public class ExtjsUtils {
 		
 	}
 	
-	/**
-	 * return reference to extjs component
-	 * 
-	 * @param componentId
-	 * @return
-	 */
-	public static String getComponentById(final String componentId) {
-		return "window.Ext.getCmp('" + componentId + "')";
-	}
-	
 	public static String getComponentType(final Selenium selenium, final String textOrLable) {
 		return selenium.getEval(String.format("%s.getXType()", getComponentByTextOrLable(selenium, textOrLable, null)));
+	}
+	
+	public static String getComponentXpath(final WebDriver driver, final String element) {
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		return (String) js.executeScript(String.format("return window.createXPathFromElement(%s)", element));
 	}
 	
 	public static boolean waitForAjaxRequests(final Selenium selenium) {

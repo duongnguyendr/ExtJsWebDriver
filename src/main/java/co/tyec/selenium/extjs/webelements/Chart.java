@@ -5,20 +5,18 @@ import org.openqa.selenium.WebElement;
 
 public class Chart extends ExtJSComponent {
 	
-	public Chart(WebDriver driver, ExtJSQueryType queryType, String query) {
-		super(driver, queryType, query);
-	}
-	
-	public Chart(WebDriver driver, WebElement topElement) {
-		super(driver, topElement);
-	}
-	
-	String getSvs = "SExt.prototype.getSvgs = function (itemId){"
-			+ "var domEl = document.getElementById(itemId);"
-			+ "if (domEl) {"
-			+ "	return domEl.getElementsByTagName('svg') || [];"
-			+ "}"
-			+ "return [];"
+	String convertStoreToCSV = "SExt.prototype.convertStoreToCSV = function(store) {"
+			+ "var fields = Ext.Array.map(store.model.getFields(), function(field) {"
+			+ "    return field.name;"
+			+ "}), csvLines = [ fields.join(',') ];"
+			+ "Ext.each(store.getRange(), function(modelObj) {"
+			+ "    var propList = [];"
+			+ "    Ext.Array.forEach(fields, function(fieldName) {"
+			+ "	    propList.push(modelObj.data[fieldName]);"
+			+ "    });"
+			+ "    csvLines.push(propList.join(','));"
+			+ "});"
+			+ "return csvLines.join('\r\n');"
 			+ "}";
 	
 	String convertStoreToJSON = "SExt.prototype.convertStoreToJSON = function (store) {"
@@ -33,18 +31,38 @@ public class Chart extends ExtJSComponent {
 			+ "return Ext.encode(dataList);"
 			+ "}";
 	
-	String convertStoreToCSV = "SExt.prototype.convertStoreToCSV = function(store) {"
-			+ "var fields = Ext.Array.map(store.model.getFields(), function(field) {"
-			+ "    return field.name;"
-			+ "}), csvLines = [ fields.join(',') ];"
-			+ "Ext.each(store.getRange(), function(modelObj) {"
-			+ "    var propList = [];"
-			+ "    Ext.Array.forEach(fields, function(fieldName) {"
-			+ "	    propList.push(modelObj.data[fieldName]);"
-			+ "    });"
-			+ "    csvLines.push(propList.join(','));"
-			+ "});"
-			+ "return csvLines.join('\r\n');"
+	/**
+	 * Returns the first store found as a CSV object
+	 * 
+	 * @param itemId
+	 *            The first store found under the itemID (ex, Panel-1012, or Chart-1021) is returned
+	 * @param uuid
+	 *            The store data is saved to this uuid for silk4j to read
+	 */
+	String getChartAsCSV = "SExt.prototype.getChartAsCSV = function (itemId, uuid) {"
+			// find the chart & store
+			+ "var store = this.getFirstSVGStore(itemId);"
+			// convert store to string
+			+ "var csv = this.convertStoreToCSV(store);"
+			// write string to unique id
+			+ "writeDataToDiv(csv, uuid);"
+			+ "}";
+	
+	/**
+	 * Returns the first store found
+	 * 
+	 * @param itemId
+	 *            The first store found under the itemID (ex, Panel-1012, or Chart-1021) is returned
+	 * @param uuid
+	 *            The store data is saved to this uuid for silk4j to read
+	 */
+	String getChartAsJSON = "SExt.prototype.getChartAsJSON : function (itemId, uuid) {"
+			// find the chart & store
+			+ "var store = this.getFirstSVGStore(itemId);"
+			// convert store to string
+			+ "var json = this.convertStoreToJSON(store);"
+			// write string to unique id
+			+ "writeDataToDiv(json, uuid);"
 			+ "}";
 	
 	String getFirstSVGStore = "SExt.prototype.getFirstSVGStore = function (itemId){"
@@ -65,38 +83,20 @@ public class Chart extends ExtJSComponent {
 			+ "});"
 			+ "return store;"
 			+ "}";
-	/**
-	 * Returns the first store found
-	 * 
-	 * @param itemId
-	 *            The first store found under the itemID (ex, Panel-1012, or Chart-1021) is returned
-	 * @param uuid
-	 *            The store data is saved to this uuid for silk4j to read
-	 */
-	String getChartAsJSON = "SExt.prototype.getChartAsJSON : function (itemId, uuid) {"
-			// find the chart & store
-			+ "var store = this.getFirstSVGStore(itemId);"
-			// convert store to string
-			+ "var json = this.convertStoreToJSON(store);"
-			// write string to unique id
-			+ "writeDataToDiv(json, uuid);"
-			+ "}";
 	
-	/**
-	 * Returns the first store found as a CSV object
-	 * 
-	 * @param itemId
-	 *            The first store found under the itemID (ex, Panel-1012, or Chart-1021) is returned
-	 * @param uuid
-	 *            The store data is saved to this uuid for silk4j to read
-	 */
-	String getChartAsCSV = "SExt.prototype.getChartAsCSV = function (itemId, uuid) {"
-			// find the chart & store
-			+ "var store = this.getFirstSVGStore(itemId);"
-			// convert store to string
-			+ "var csv = this.convertStoreToCSV(store);"
-			// write string to unique id
-			+ "writeDataToDiv(csv, uuid);"
+	String getSvs = "SExt.prototype.getSvgs = function (itemId){"
+			+ "var domEl = document.getElementById(itemId);"
+			+ "if (domEl) {"
+			+ "	return domEl.getElementsByTagName('svg') || [];"
+			+ "}"
+			+ "return [];"
 			+ "}";
+	public Chart(WebDriver driver, ExtJSQueryType queryType, String query) {
+		super(driver, queryType, query);
+	}
+	
+	public Chart(WebDriver driver, WebElement topElement) {
+		super(driver, topElement);
+	}
 	
 }

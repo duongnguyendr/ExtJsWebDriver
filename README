@@ -14,13 +14,17 @@ h2. JavaScript Code Managment - How should we store the JS code?
 - Looks like Just saving JS as strings wins. Everything else was complicated and non-standard. I was scared about the comments and java docs being formatted and having *'s added in the middle of the code.  
 
 h2. A single Javascript method to funnel all javaascript through.
-* Should you be able to do ".getEL()"; and expect it to return a function?
+* Should you be able to do ".getEL()"; and expect it to return a stuff OR do we force "return extCmp.getEl();"
+* right now the answer is force "return..."
 
 h2. Do we need to load any basic utility functions? Any of them?
 * Load the Entire SExt object
 * Load the functions just before they are called, everytime.
 * Load the functions just before they are called, but check to see if it's required (ie return (SExt.method typeof 'function') ? true : false;)
 
+h3. If we need to load any basic utilities, how do we do it, and do it well?
+* No idea right now.
+
 h1. TODO:
  - Remove all methods that fire events.
- - Remove all cleanEvalTrue, waitCleanEvalTrue, etc.
+ - Stack overflow issue. what is clean? just a full eval, nothing else? Then how does waitForAjax run?

@@ -17,9 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ComboBox extends ExtJSComponent {
-	final static Logger logger = LoggerFactory.getLogger(ComboBox.class);
-	
 	private static final By BOUND_LIST_LOCATOR = By.cssSelector("li.x-boundlist-item");
+	
+	final static Logger logger = LoggerFactory.getLogger(ComboBox.class);
 	
 	static final String setComboBox = "SExt.prototype.setComboBox = function (query, item, uuid) {"
 			+ "var success = false;"
@@ -39,7 +39,7 @@ public class ComboBox extends ExtJSComponent {
 	
 	private String listDynId = null;
 	
-	public ComboBox(WebDriver driver, ExtJSQueryType queryType, String query){
+	public ComboBox(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);
 	}
 	
@@ -84,7 +84,9 @@ public class ComboBox extends ExtJSComponent {
 			});
 		}
 		
-		wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#" + getListDynId() + " li.x-boundlist-item")));
+		wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#"
+				+ getListDynId()
+				+ " li.x-boundlist-item")));
 		
 		for (int i = 0; i < optionList.size(); i++) {
 			String actualOption;
@@ -109,7 +111,8 @@ public class ComboBox extends ExtJSComponent {
 	}
 	
 	private void collapseDropDown() {
-		js.executeScript(SCRIPT_TOP_ELEMENT_TO_EXT_JS_CMP + " extCmp.collapse();", getTextInput());
+		js.executeScript(SCRIPT_TOP_ELEMENT_TO_EXT_JS_CMP
+				+ " extCmp.collapse();", getTextInput());
 	}
 	
 	/**
@@ -134,7 +137,8 @@ public class ComboBox extends ExtJSComponent {
 	 */
 	public Integer getCount() {
 		final String eval = (String) execScriptOnExtJsCmp("return extCmp.store.getCount();");
-		if (eval == null || "null".equals(eval)) {
+		if (eval == null
+				|| "null".equals(eval)) {
 			return null;
 		}
 		
@@ -205,9 +209,10 @@ public class ComboBox extends ExtJSComponent {
 	public String getValue() {
 		return (String) execScriptOnExtJsCmp(String.format("return extCmp.getValue();"));
 	}
-
+	
 	private Boolean isDirty() {
-		return (Boolean) js.executeScript(SCRIPT_TOP_ELEMENT_TO_EXT_JS_CMP + " return extCmp.isDirty();", getTextInput());
+		return (Boolean) js.executeScript(SCRIPT_TOP_ELEMENT_TO_EXT_JS_CMP
+				+ " return extCmp.isDirty();", getTextInput());
 	}
 	
 	/**
@@ -233,10 +238,16 @@ public class ComboBox extends ExtJSComponent {
 	 *            int
 	 */
 	public void select(final int i) {
-		//focus();
-		execScriptOnExtJsCmp("extCmp.setValue(extCmp.store.getAt(" + i + ").get(extCmp.valueField) )");
-		execScriptOnExtJsCmp("extCmp.fireEvent( 'select', extCmp, extCmp.store.getAt(" + i + "), " + i + " )");
-		//blur();
+		// focus();
+		execScriptOnExtJsCmp("extCmp.setValue(extCmp.store.getAt("
+				+ i
+				+ ").get(extCmp.valueField) )");
+		execScriptOnExtJsCmp("extCmp.fireEvent( 'select', extCmp, extCmp.store.getAt("
+				+ i
+				+ "), "
+				+ i
+				+ " )");
+		// blur();
 	}
 	
 	public void sendKeys(CharSequence... arg0) {
@@ -248,7 +259,7 @@ public class ComboBox extends ExtJSComponent {
 	 * Could the text input web element be a TextField component instead?
 	 */
 	protected void setListDynId() {
-		listDynId = (String) execScriptOnElement(SCRIPT_TOP_ELEMENT_TO_EXT_JS_CMP 
+		listDynId = (String) execScriptOnElement(SCRIPT_TOP_ELEMENT_TO_EXT_JS_CMP
 				+ " extCmp.expand(); return extCmp.listKeyNav.boundList.id;", getTextInput());
 	}
 	
@@ -261,22 +272,33 @@ public class ComboBox extends ExtJSComponent {
 	 */
 	public String setValue(final String value) {
 		focus();
-		execScriptOnExtJsCmp("extCmp.setValue( '" + value + "' )");
-		execScriptOnExtJsCmp("extCmp.fireEvent( 'select', extCmp, extCmp.store.getById('" + value + "'), extCmp.store.indexOfId('" + value + "') )");
+		execScriptOnExtJsCmp("extCmp.setValue( '"
+				+ value
+				+ "' )");
+		execScriptOnExtJsCmp("extCmp.fireEvent( 'select', extCmp, extCmp.store.getById('"
+				+ value
+				+ "'), extCmp.store.indexOfId('"
+				+ value
+				+ "') )");
 		blur();
 		return value;
 	}
 	
 	/**
-	 * 
 	 * @param value
 	 * @param fieldName
 	 */
 	public void setValue(final String value, final String fieldName) {
 		focus();
 		final Integer index = findInStore(fieldName, value);
-		execScriptOnExtJsCmp("extCmp.setValue(extCmp.store.getAt(" + index + ").get(extCmp.valueField) )");
-		execScriptOnExtJsCmp("extCmp.fireEvent( 'select', extCmp, extCmp.store.getAt(" + index + "), " + index + " )");
+		execScriptOnExtJsCmp("extCmp.setValue(extCmp.store.getAt("
+				+ index
+				+ ").get(extCmp.valueField) )");
+		execScriptOnExtJsCmp("extCmp.fireEvent( 'select', extCmp, extCmp.store.getAt("
+				+ index
+				+ "), "
+				+ index
+				+ " )");
 		blur();
 	}
 }

@@ -13,8 +13,6 @@ public class Radio extends ExtJSComponent {
 	}
 	
 	/**
-	 * 
-	 * 
 	 * @return boolean
 	 */
 	public boolean isChecked() {

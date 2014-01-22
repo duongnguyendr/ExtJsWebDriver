@@ -15,6 +15,31 @@ public class Tree extends ExtJSComponent {
 	}
 	
 	/**
+	 * Method contains.
+	 * 
+	 * @param id
+	 *            String
+	 * @return boolean
+	 */
+	public boolean contains(final String id) {
+		return execScriptOnExtJsCmpReturnBoolean("return extCmp.nodeHash['"
+				+ id
+				+ "'] != null");
+	}
+	
+	/**
+	 * Method getErrorText.
+	 * 
+	 * @return String
+	 */
+	public String getErrorText() {
+		WebElement errorText = driver.findElement(By.xpath(getXPath()
+				+ "//div[@class='x-form-invalid-msg']"));
+		final String text = errorText.getText();
+		return text;
+	}
+	
+	/**
 	 * Method getRootNode.
 	 * 
 	 * @return TreeNode
@@ -22,22 +47,6 @@ public class Tree extends ExtJSComponent {
 	public TreeNode getRootNode() {
 		final TreeNode treeNode = new TreeNode(driver, ExtJSQueryType.Custom, getExpression());
 		return treeNode.getRootNode();
-	}
-	
-	/**
-	 * Method select By Id.
-	 * 
-	 * @param id
-	 *            String
-	 * @return TreeNode
-	 */
-	public TreeNode select(final String id) {
-		execScriptClean(".getSelectionModel().select(" //
-				+ getExpression() + ".nodeHash['" + id + "']" + //
-				")");
-		final TreeNode treeNode = new TreeNode(driver, ExtJSQueryType.Custom, getExpression());
-		
-		return treeNode.getSelectedNode();
 	}
 	
 	/**
@@ -54,25 +63,23 @@ public class Tree extends ExtJSComponent {
 	}
 	
 	/**
-	 * Method getErrorText.
-	 * 
-	 * @return String
-	 */
-	public String getErrorText() {
-		WebElement errorText = driver.findElement(By.xpath(getXPath() + "//div[@class='x-form-invalid-msg']"));
-		final String text = errorText.getText();
-		return text;
-	}
-	
-	/**
-	 * Method contains.
+	 * Method select By Id.
 	 * 
 	 * @param id
 	 *            String
-	 * @return boolean
+	 * @return TreeNode
 	 */
-	public boolean contains(final String id) {
-		return execScriptOnExtJsCmpReturnBoolean("return extCmp.nodeHash['" + id + "'] != null");
+	public TreeNode select(final String id) {
+		execScriptClean(".getSelectionModel().select(" //
+				+ getExpression()
+				+ ".nodeHash['"
+				+ id
+				+ "']"
+				+ //
+				")");
+		final TreeNode treeNode = new TreeNode(driver, ExtJSQueryType.Custom, getExpression());
+		
+		return treeNode.getSelectedNode();
 	}
 	
 }

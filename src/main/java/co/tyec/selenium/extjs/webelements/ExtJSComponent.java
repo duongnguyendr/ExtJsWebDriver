@@ -25,6 +25,8 @@ public class ExtJSComponent extends JSExtendedWebElement {
 			+ "  return el;"
 			+ "}";
 	
+	final static Logger logger = LoggerFactory.getLogger(ExtJSComponent.class);
+	
 	/**
 	 * This is meant to be a general way to convert a specific id to the general id ( Ex. td[@id="combobox-1009-bodyEl"] to comboBox-1009)
 	 */
@@ -36,27 +38,43 @@ public class ExtJSComponent extends JSExtendedWebElement {
 	static private final String SCRIPT_TOP_ELEMENT_TO_EXT_JS_ID = SCRIPT_TOP_ELEMENT_TO_EXT_JS_CMP
 			+ ";return extCmp.getId();"; // should this be .id?
 	
-	final static Logger logger = LoggerFactory.getLogger(ExtJSComponent.class);
-	
+	/**
+	 * ExtJS Query that would be used in Ext.ComponentQuery.query("[name='myCheckbox']");
+	 */
+	static protected String convertQueryTypeAndQueryToScript(ExtJSQueryType queryType, String query) {
+		String queryScript = null;
+		
+		if (queryType == null) {
+			return null;
+		} else if (queryType.equals(ExtJSQueryType.ComponentQuery)) {
+			queryScript = String.format("%s; %s; return SExt.findVisibleComponentElement(\"%s\");", FUNCTION_DEFINE_SExt, FUNCTION_findVisibleComponentElement,
+					query);
+		} else if (queryType.equals(ExtJSQueryType.GetCmp)) {
+			queryScript = String.format("return Ext.getCmp(\"%s\").getEl().dom;", query);
+		} else {
+			queryScript = query;
+		}
+		
+		return queryScript;
+	}
 	
 	protected String extJsCmpId = null;
 	
 	final String FUNCTION_getXPathTo = "SExt.getXPathTo = function getXPathTo(element) {"
 			+ "    if (element.id!=='')"
-	    	+ "        return 'id(\"'+element.id+'\")';"
+			+ "        return 'id(\"'+element.id+'\")';"
 			+ "    if (element===document.body)"
-	    	+ "        return element.tagName;"
-	    	+ "    var ix= 0;"
-	    	+ "    var siblings= element.parentNode.childNodes;"
-	    	+ "    for (var i= 0; i<siblings.length; i++) {"
-	    	+ "        var sibling= siblings[i];"
-	        + "        if (sibling===element)"
-	        + "            return SExt.getXPathTo(element.parentNode)+'/'+element.tagName+'['+(ix+1)+']';"
-	        + "        if (sibling.nodeType===1 && sibling.tagName===element.tagName)"
-	        + "            ix++;"
-	        + "    }"
-	        + "}";
-	
+			+ "        return element.tagName;"
+			+ "    var ix= 0;"
+			+ "    var siblings= element.parentNode.childNodes;"
+			+ "    for (var i= 0; i<siblings.length; i++) {"
+			+ "        var sibling= siblings[i];"
+			+ "        if (sibling===element)"
+			+ "            return SExt.getXPathTo(element.parentNode)+'/'+element.tagName+'['+(ix+1)+']';"
+			+ "        if (sibling.nodeType===1 && sibling.tagName===element.tagName)"
+			+ "            ix++;"
+			+ "    }"
+			+ "}";
 	
 	/**
 	 * @param driver
@@ -78,10 +96,52 @@ public class ExtJSComponent extends JSExtendedWebElement {
 	
 	/**
 	 * Method blur.
+	 * 
 	 * @deprecated
 	 */
 	public void blur() {
 		fireEvent("blur");
+	}
+	
+	/**
+	 * This is used to run javascript scrits on the ExtJS ExtJSComponent. For Example, execScriptOnExtJsComponent("return extCmp.getValue()"); will run the
+	 * JavaScript method getValue on the ExtJS component object.
+	 * 
+	 * @param jsCode
+	 *            Javscript code to execute.
+	 * @return
+	 */
+	public Object execScriptOnExtJsCmp(String jsCode) {
+		String finalScript = String.format("var extCmp = Ext.getCmp('%s'); %s;", getComponentId(), jsCode);
+		return execScriptClean(finalScript);
+	}
+	
+	public Boolean execScriptOnExtJsCmpReturnBoolean(String jsCode) {
+		String finalScript = String.format("var extCmp = Ext.getCmp('%s'); %s;", getComponentId(), jsCode);
+		return execScriptCleanReturnBoolean(finalScript);
+	}
+	
+	/**
+	 * Method evalNullComponent.
+	 * 
+	 * @param expr
+	 *            String
+	 * @return boolean
+	 */
+	public boolean execScriptOnExtJSCmpReturnIsNull(final String jsCode) {
+		String finalScript = String.format("var extCmp = Ext.getCmp('%s'); %s;", getComponentId(), jsCode);
+		try {
+			Object out = execScriptOnExtJsCmp(finalScript);
+			return out == null
+					|| "null".equals(out);
+		} catch (final Exception e) {
+			return false;
+		}
+	}
+	
+	public String execScriptOnExtJsCmpReturnString(String jsCode) {
+		String finalScript = String.format("var extCmp = Ext.getCmp('%s'); %s;", getComponentId(), jsCode);
+		return String.valueOf(execScriptCleanReturnBoolean(finalScript));
 	}
 	
 	@Deprecated
@@ -92,6 +152,7 @@ public class ExtJSComponent extends JSExtendedWebElement {
 	
 	/**
 	 * Method focus.
+	 * 
 	 * @deprecated remove all event methods
 	 */
 	@Deprecated
@@ -165,7 +226,8 @@ public class ExtJSComponent extends JSExtendedWebElement {
 	 * @return boolean
 	 */
 	public boolean hidden() {
-		return (Boolean) execScriptOnExtJsCmp("return extCmp == null") || (Boolean) execScriptOnExtJsCmp("return extCmp.hidden");
+		return (Boolean) execScriptOnExtJsCmp("return extCmp == null")
+				|| (Boolean) execScriptOnExtJsCmp("return extCmp.hidden");
 	}
 	
 	/**
@@ -177,27 +239,6 @@ public class ExtJSComponent extends JSExtendedWebElement {
 		return (Boolean) execScriptOnExtJsCmp("return extCmp.disabled");
 	}
 	
-	
-	
-	/**
-	 * ExtJS Query that would be used in Ext.ComponentQuery.query("[name='myCheckbox']");
-	 */
-	static protected String convertQueryTypeAndQueryToScript(ExtJSQueryType queryType, String query) {
-		String queryScript = null;
-		
-		if (queryType == null) {
-			return null;
-		} else if (queryType.equals(ExtJSQueryType.ComponentQuery)) {
-			queryScript = String.format("%s; %s; return SExt.findVisibleComponentElement(\"%s\");", FUNCTION_DEFINE_SExt, FUNCTION_findVisibleComponentElement, query);
-		} else if (queryType.equals(ExtJSQueryType.GetCmp)) {
-			queryScript = String.format("return Ext.getCmp(\"%s\").getEl().dom;", query);
-		} else {
-			queryScript = query;
-		}
-		
-		return queryScript;
-	}
-	
 	/**
 	 * Method visible.
 	 * 
@@ -206,22 +247,6 @@ public class ExtJSComponent extends JSExtendedWebElement {
 	public boolean visible() {
 		return !hidden();
 	}
-	
-	// /**
-	// * Returns this ExtJSComponent's xtype --hierarchy-- as a slash-delimited string ------------
-	// *
-	// *
-	// * @return List<String>
-	// */
-	// public List<String> getXTypes() {
-	// ArrayList<String> listString = new ArrayList<String>();
-	// @SuppressWarnings("unchecked")
-	// List<Object> listObject = (List<Object>) execScriptOnExtJsComponent("return el.getXTypes()");
-	// for(Object current : listObject){
-	// listString.add(String.valueOf(current));
-	// }
-	// return listString;
-	// }
 	
 	/**
 	 * Method waitFor msg dialog when has an error/failure .
@@ -244,49 +269,9 @@ public class ExtJSComponent extends JSExtendedWebElement {
 	 *            String
 	 */
 	protected void waitForExecScriptOnExtJSCmpToReturnTrue(final String expr) {
-		final String fullExpr = getExpression()	+ expr;
+		final String fullExpr = getExpression()
+				+ expr;
 		waitForExecScriptToReturnTrue(fullExpr);
-	}
-	
-
-	/**
-	 * Method evalNullComponent.
-	 * 
-	 * @param expr
-	 *            String
-	 * @return boolean
-	 */
-	public boolean execScriptOnExtJSCmpReturnIsNull(final String jsCode) {
-		String finalScript = String.format("var extCmp = Ext.getCmp('%s'); %s;", getComponentId(), jsCode);
-		try {
-			Object out = execScriptOnExtJsCmp(finalScript);
-			return out == null || "null".equals(out);
-		} catch (final Exception e) {
-			return false;
-		}
-	}
-	
-	public String execScriptOnExtJsCmpReturnString(String jsCode) {
-		String finalScript = String.format("var extCmp = Ext.getCmp('%s'); %s;", getComponentId(), jsCode);
-		return String.valueOf(execScriptCleanReturnBoolean(finalScript));
-	}
-	
-	public Boolean execScriptOnExtJsCmpReturnBoolean(String jsCode) {
-		String finalScript = String.format("var extCmp = Ext.getCmp('%s'); %s;", getComponentId(), jsCode);
-		return execScriptCleanReturnBoolean(finalScript);
-	}
-	
-	/**
-	 * This is used to run javascript scrits on the ExtJS ExtJSComponent. For Example, execScriptOnExtJsComponent("return extCmp.getValue()"); will run the
-	 * JavaScript method getValue on the ExtJS component object.
-	 * 
-	 * @param jsCode
-	 *            Javscript code to execute.
-	 * @return
-	 */
-	public Object execScriptOnExtJsCmp(String jsCode) {
-		String finalScript = String.format("var extCmp = Ext.getCmp('%s'); %s;", getComponentId(), jsCode);
-		return execScriptClean(finalScript);
 	}
 	
 	/**
@@ -329,18 +314,6 @@ public class ExtJSComponent extends JSExtendedWebElement {
 	}
 	
 	/**
-	 * Wait For Tree Loading Mask To Disappear.
-	 * 
-	 * @param panelMaskId
-	 *            String
-	 * @return boolean
-	 */
-	protected boolean waitForTreeLoadingMaskToDisappear(final String panelMaskId) {
-		final boolean success = waitForExecScriptToReturnTrue(String.format("!window.Ext.fly('%s').isVisible()", panelMaskId));
-		return success;
-	}
-	
-	/**
 	 * Wait until the component is viable
 	 * 
 	 * @return boolean
@@ -357,6 +330,18 @@ public class ExtJSComponent extends JSExtendedWebElement {
 			throw new RuntimeException("Timeout");
 		}
 		
+		return success;
+	}
+	
+	/**
+	 * Wait For Tree Loading Mask To Disappear.
+	 * 
+	 * @param panelMaskId
+	 *            String
+	 * @return boolean
+	 */
+	protected boolean waitForTreeLoadingMaskToDisappear(final String panelMaskId) {
+		final boolean success = waitForExecScriptToReturnTrue(String.format("!window.Ext.fly('%s').isVisible()", panelMaskId));
 		return success;
 	}
 	

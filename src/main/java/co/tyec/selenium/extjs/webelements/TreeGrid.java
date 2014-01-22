@@ -22,6 +22,31 @@ public class TreeGrid extends ExtJSComponent {
 	}
 	
 	/**
+	 * (search in node attribute) return True if found any match
+	 * 
+	 * @param id
+	 *            - nodeId
+	 * @return boolean
+	 */
+	public boolean contains(final String id) {
+		return execScriptCleanReturnBoolean("return extCmp.nodeHash['"
+				+ id
+				+ "'] != null");
+	}
+	
+	/**
+	 * Method getErrorText.
+	 * 
+	 * @return String
+	 */
+	public String getErrorText() {
+		WebElement el = driver.findElement(By.xpath(getXPath()
+				+ "//div[@class='x-form-invalid-msg']"));
+		final String text = el.getText();
+		return text;
+	}
+	
+	/**
 	 * return the root-node of the tree
 	 * 
 	 * @return - node
@@ -32,36 +57,13 @@ public class TreeGrid extends ExtJSComponent {
 	}
 	
 	/**
-	 * select node by given string
-	 * 
-	 * @param name
-	 * 
+	 * return the selected Treenode
 	 * 
 	 * @return TreeNode
 	 */
-	public TreeNode selectNodeByName(final String name) {
-		final TreeNode treeNode = new TreeNode(driver, ExtJSQueryType.Custom, getExpression());
-		treeNode.getRootNode().findNodeGridChild(name);
-		
-		return treeNode.getSelectedNode();
-	}
-	
-	/**
-	 * Select the ui-node by given nodeId
-	 * 
-	 * @param id
-	 *            - nodeId
-	 * 
-	 * 
-	 * @return TreeNode
-	 */
-	public TreeNode select(final String id) {
-		execScriptClean(".getSelectionModel().select(" //
-				+ getExpression() + ".nodeHash['" + id + "']" + //
-				")");
-		final TreeNode treeNode = new TreeNode(driver, ExtJSQueryType.Custom, getExpression());
-		
-		return treeNode.getSelectedNode();
+	public TreeNode getSelectedNode() {
+		final TreeNode node = new TreeNode(driver, ExtJSQueryType.Custom, getExpression());
+		return node.getSelectedNode();
 	}
 	
 	/**
@@ -69,7 +71,6 @@ public class TreeGrid extends ExtJSComponent {
 	 * 
 	 * @param err
 	 *            String
-	 * 
 	 * @return boolean
 	 */
 	public boolean hasErrorText(final String err) {
@@ -79,37 +80,36 @@ public class TreeGrid extends ExtJSComponent {
 	}
 	
 	/**
-	 * Method getErrorText.
-	 * 
-	 * @return String
-	 */
-	public String getErrorText() {
-		WebElement el = driver.findElement(By.xpath(getXPath() + "//div[@class='x-form-invalid-msg']"));
-		final String text = el.getText();
-		return text;
-	}
-	
-	/**
-	 * (search in node attribute) return True if found any match
+	 * Select the ui-node by given nodeId
 	 * 
 	 * @param id
 	 *            - nodeId
-	 * 
-	 * 
-	 * @return boolean
+	 * @return TreeNode
 	 */
-	public boolean contains(final String id) {
-		return execScriptCleanReturnBoolean("return extCmp.nodeHash['" + id + "'] != null");
+	public TreeNode select(final String id) {
+		execScriptClean(".getSelectionModel().select(" //
+				+ getExpression()
+				+ ".nodeHash['"
+				+ id
+				+ "']"
+				+ //
+				")");
+		final TreeNode treeNode = new TreeNode(driver, ExtJSQueryType.Custom, getExpression());
+		
+		return treeNode.getSelectedNode();
 	}
 	
 	/**
-	 * return the selected Treenode
+	 * select node by given string
 	 * 
+	 * @param name
 	 * @return TreeNode
 	 */
-	public TreeNode getSelectedNode() {
-		final TreeNode node = new TreeNode(driver, ExtJSQueryType.Custom, getExpression());
-		return node.getSelectedNode();
+	public TreeNode selectNodeByName(final String name) {
+		final TreeNode treeNode = new TreeNode(driver, ExtJSQueryType.Custom, getExpression());
+		treeNode.getRootNode().findNodeGridChild(name);
+		
+		return treeNode.getSelectedNode();
 	}
 	
 	/**
