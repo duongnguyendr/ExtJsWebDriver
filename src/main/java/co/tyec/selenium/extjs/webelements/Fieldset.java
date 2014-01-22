@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
  * @author Asaf Levy
  * @version $Revision: 1.0
  */
-public class Fieldset extends Component {
+public class Fieldset extends ExtJSComponent {
 	
 	public Fieldset(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);

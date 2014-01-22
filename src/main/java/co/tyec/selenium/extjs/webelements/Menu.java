@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
  * @author Asaf Levy
  * @version $Revision: 1.0
  */
-public class Menu extends Component {
+public class Menu extends ExtJSComponent {
 	
 	public Menu(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);
@@ -25,7 +25,7 @@ public class Menu extends Component {
 	 *            String
 	 */
 	public void click(final String itemKey) {
-		final String id = (String) execScriptOnExtJsComponent("el.items.items[" + getExpression() + ".items.indexOfKey('" + itemKey + "')].el.dom.id");
+		final String id = String.valueOf(execScriptOnExtJsCmp("el.items.items[" + getExpression() + ".items.indexOfKey('" + itemKey + "')].el.dom.id"));
 		driver.findElement(By.xpath("//*[@id='" + id + "']")).click();
 	}
 	
@@ -38,7 +38,7 @@ public class Menu extends Component {
 	 *            String
 	 */
 	public void click(final String propName, final String propValue) {
-		final String id = getEval(".items.items[" + getExpression() + ".items.findIndex('" + propName + "', '" + propValue + "')].el.dom.id");
+		final String id = String.valueOf(execScriptOnExtJsCmp("return extCmp.items.items[" + getExpression() + ".items.findIndex('" + propName + "', '" + propValue + "')].el.dom.id"));
 		topElement.findElement(By.xpath("//*[@id='" + id + "']")).click();
 	}
 }

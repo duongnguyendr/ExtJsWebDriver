@@ -3,7 +3,7 @@ package co.tyec.selenium.extjs.webelements;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class Panel extends Component {
+public class Panel extends ExtJSComponent {
 	
 	public Panel(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);
@@ -17,16 +17,15 @@ public class Panel extends Component {
 	 * Method collapse.
 	 */
 	public void collapse() {
-		
-		evalTrue(".collapse()");
-		waitForEvalTrue(".collapsed == true");
+		execScriptOnExtJsCmp("extCmp.collapse()");
+		waitForExecScriptOnExtJSCmpToReturnTrue("return extCmp.collapsed == true");
 	}
 	
 	/**
 	 * Method expand.
 	 */
 	public void expand() {
-		evalTrue(".expand()");
-		waitForEvalTrue(".collapsed == false");
+		execScriptOnExtJsCmp("extCmp.expand()");
+		waitForExecScriptOnExtJSCmpToReturnTrue("return extCmp.collapsed == false");
 	}
 }

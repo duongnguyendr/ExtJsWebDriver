@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 /**
  * @author Taylor York
  */
-public class Button extends Component {
+public class Button extends ExtJSComponent {
 	String clickButton = "SExt.prototype.clickButton = function (query, uuid) {"
 			+ "var comp = this.findVisibleComponent(query);"
 			+ "var success = comp.btnEl.dom.click();"
@@ -29,7 +29,7 @@ public class Button extends Component {
 	 */
 	@Override
 	public boolean disabled() {
-		return evalTrue(".disabled");
+		return (Boolean) execScriptOnExtJsCmp("return extCmp.disabled");
 	}
 	
 	/**
@@ -38,7 +38,7 @@ public class Button extends Component {
 	 * @throws InterruptedException
 	 */
 	public void clickAndWaitForAjaxValid() throws InterruptedException {
-		waitExecScriptOnExtJsComponentTrue(".disabled == false");
+		waitForExecScriptToReturnTrue(".disabled == false");
 		click();
 		wait(2);
 		waitForFinishAjaxRequest();

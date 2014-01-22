@@ -3,7 +3,7 @@ package co.tyec.selenium.extjs.webelements;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class Chart extends Component {
+public class Chart extends ExtJSComponent {
 	
 	public Chart(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);
@@ -56,7 +56,7 @@ public class Chart extends Component {
 			+ "Ext.each(svgs, function(el) {"
 			+ "    var container = el.parentElement,"
 			+ "    	extCmp = Ext.getCmp(container.id);"
-			// Component doesnt exist or doesn't have a store
+			// ExtJSComponent doesnt exist or doesn't have a store
 			+ "    if(!extCmp || !extCmp.getStore){"
 			+ "    	return;"
 			+ "    }"

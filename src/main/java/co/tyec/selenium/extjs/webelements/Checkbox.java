@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 /**
  * @author Taylor York
  */
-public class Checkbox extends Component {
+public class Checkbox extends ExtJSComponent {
 	String setCheckbox = "SExt.prototype.setCheckbox = function (query, value, uuid) {"
 			+ "var comp = this.findVisibleComponent(query);"
 			+ "var success = comp.setValue(value);"
@@ -25,7 +25,7 @@ public class Checkbox extends Component {
 	 * @return boolean
 	 */
 	public boolean isChecked() {
-		boolean ret = evalTrue("return extCmp.checked;");
+		boolean ret = (Boolean) execScriptOnExtJsCmp("return extCmp.checked;");
 		return ret;
 	}
 	
@@ -36,10 +36,10 @@ public class Checkbox extends Component {
 	 *            boolean
 	 */
 	public void check(final boolean enable) {
-		if (enable != evalTrue("return extCmp.getValue()")) {
+		if (enable != (Boolean) execScriptOnExtJsCmp("return extCmp.getValue()")) {
 			click();
 		}
-		execScriptOnExtJsComponent("extCmp.setValue(" + enable + ")");
+		execScriptOnExtJsCmp("extCmp.setValue(" + enable + ")");
 	}
 	
 	/**

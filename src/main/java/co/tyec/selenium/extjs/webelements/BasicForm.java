@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 /**
  * @author Taylor york
  */
-public class BasicForm extends Component {
+public class BasicForm extends ExtJSComponent {
 	
 	public BasicForm(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);
@@ -16,7 +16,7 @@ public class BasicForm extends Component {
 		super(driver, topElement);
 	}
 	
-	public Component findComponentIn(ExtJSQueryType queryType, String query) {
-		return new Component(driver, queryType, query);
+	public ExtJSComponent findComponentIn(ExtJSQueryType queryType, String query) {
+		return new ExtJSComponent(driver, queryType, query);
 	}
 }

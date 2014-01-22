@@ -2,7 +2,7 @@ package co.tyec.selenium.extjs.webelements;
 
 import org.openqa.selenium.WebDriver;
 
-public class TreeNode extends Component {
+public class TreeNode extends ExtJSComponent {
 	
 	final String getUIfunction = ".getUI()";
 	
@@ -47,7 +47,7 @@ public class TreeNode extends Component {
 		if (nodeExpression.isEmpty() || nodeExpression.length() == 0) {
 			getRootNode();
 		}
-		getEval(nodeExpression + ".findChild( 'name' ,'" + val + "' , true ).select()");
+		execScriptOnExtJsCmp(nodeExpression + ".findChild( 'name' ,'" + val + "' , true ).select()");
 		return this;
 	}
 	
@@ -140,7 +140,7 @@ public class TreeNode extends Component {
 	 * @return String
 	 */
 	public String getSelectedNodeAtt(final String att) {
-		return getEval(".getSelectionModel().getSelectedNode().attributes." + att);
+		return execScriptOnExtJsCmpReturnString("return extCmp.getSelectionModel().getSelectedNode().attributes." + att);
 		
 	}
 	
@@ -153,7 +153,7 @@ public class TreeNode extends Component {
 	 * @return String
 	 */
 	public String getNodeAtt(final String att) {
-		return getEval(nodeExpression + ".attributes." + att);
+		return execScriptOnExtJsCmpReturnString(nodeExpression + ".attributes." + att);
 	}
 	
 	/**
@@ -194,7 +194,7 @@ public class TreeNode extends Component {
 	 * @return boolean
 	 */
 	public boolean hasChildNodes() {
-		return Boolean.parseBoolean(getEval(String.format("%s.hasChildNodes() ", nodeExpression)));
+		return execScriptOnExtJsCmpReturnBoolean(String.format("%s.hasChildNodes() ", nodeExpression));
 	}
 	
 	/**
@@ -203,7 +203,7 @@ public class TreeNode extends Component {
 	 * @return boolean
 	 */
 	public boolean isFirst() {
-		return Boolean.parseBoolean(getEval(String.format("%s.isFirst() ", nodeExpression)));
+		return execScriptOnExtJsCmpReturnBoolean(String.format("%s.isFirst() ", nodeExpression));
 	}
 	
 	/**
@@ -212,7 +212,7 @@ public class TreeNode extends Component {
 	 * @return boolean
 	 */
 	public boolean isLeaf() {
-		return Boolean.parseBoolean(getEval(String.format("%s.isLeaf() ", nodeExpression)));
+		return execScriptOnExtJsCmpReturnBoolean(String.format("%s.isLeaf() ", nodeExpression));
 	}
 	
 	/**
@@ -221,7 +221,7 @@ public class TreeNode extends Component {
 	 * @return boolean
 	 */
 	public boolean isSelected() {
-		return Boolean.parseBoolean(getEval(String.format("%s.isSelected() ", nodeExpression)));
+		return execScriptOnExtJsCmpReturnBoolean(String.format("%s.isSelected() ", nodeExpression));
 	}
 	
 	/**
@@ -229,7 +229,7 @@ public class TreeNode extends Component {
 	 * @return
 	 */
 	public Boolean isChecked() {
-		return Boolean.parseBoolean(getEval(String.format("%s.isChecked() ", treeExpression + getUIfunction)));
+		return execScriptOnExtJsCmpReturnBoolean(String.format("%s.isChecked() ", treeExpression + getUIfunction));
 	}
 	
 	/**

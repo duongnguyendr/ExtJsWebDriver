@@ -16,7 +16,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ComboBox extends Component {
+public class ComboBox extends ExtJSComponent {
 	final static Logger logger = LoggerFactory.getLogger(ComboBox.class);
 	
 	private static final By BOUND_LIST_LOCATOR = By.cssSelector("li.x-boundlist-item");
@@ -109,7 +109,7 @@ public class ComboBox extends Component {
 	}
 	
 	private void collapseDropDown() {
-		js.executeScript(FUNCTION_TOP_ELEMENT_TO_EXT_JS_CMP + " extCmp.collapse();", getTextInput());
+		js.executeScript(SCRIPT_TOP_ELEMENT_TO_EXT_JS_CMP + " extCmp.collapse();", getTextInput());
 	}
 	
 	/**
@@ -120,7 +120,7 @@ public class ComboBox extends Component {
 	 * @return
 	 */
 	public int findInStore(final String fieldName, final String value) {
-		return (Integer) execScriptOnExtJsComponent(String.format("return extCmp.store.find('%s','%s');", fieldName, value));
+		return (Integer) execScriptOnExtJsCmp(String.format("return extCmp.store.find('%s','%s');", fieldName, value));
 	}
 	
 	public String getAttribute(String arg0) {
@@ -133,7 +133,7 @@ public class ComboBox extends Component {
 	 * @return Integer
 	 */
 	public Integer getCount() {
-		final String eval = (String) execScriptOnExtJsComponent("return extCmp.store.getCount();");
+		final String eval = (String) execScriptOnExtJsCmp("return extCmp.store.getCount();");
 		if (eval == null || "null".equals(eval)) {
 			return null;
 		}
@@ -183,7 +183,7 @@ public class ComboBox extends Component {
 	 * @return String
 	 */
 	public String getRawValue() {
-		return (String) execScriptOnExtJsComponent(String.format("return extCmp.getRawValue();"));
+		return (String) execScriptOnExtJsCmp(String.format("return extCmp.getRawValue();"));
 	}
 	
 	private WebElement getTextInput() {
@@ -203,11 +203,11 @@ public class ComboBox extends Component {
 	 * @return String
 	 */
 	public String getValue() {
-		return (String) execScriptOnExtJsComponent(String.format("return extCmp.getValue();"));
+		return (String) execScriptOnExtJsCmp(String.format("return extCmp.getValue();"));
 	}
 
 	private Boolean isDirty() {
-		return (Boolean) js.executeScript(FUNCTION_TOP_ELEMENT_TO_EXT_JS_CMP + " return extCmp.isDirty();", getTextInput());
+		return (Boolean) js.executeScript(SCRIPT_TOP_ELEMENT_TO_EXT_JS_CMP + " return extCmp.isDirty();", getTextInput());
 	}
 	
 	/**
@@ -216,7 +216,7 @@ public class ComboBox extends Component {
 	 * @return String
 	 */
 	public Boolean reset() {
-		return (Boolean) execScriptOnExtJsComponent(String.format("return extCmp.reset();"));
+		return (Boolean) execScriptOnExtJsCmp(String.format("return extCmp.reset();"));
 	}
 	
 	/**
@@ -234,8 +234,8 @@ public class ComboBox extends Component {
 	 */
 	public void select(final int i) {
 		//focus();
-		execScriptOnExtJsComponent("extCmp.setValue(extCmp.store.getAt(" + i + ").get(extCmp.valueField) )");
-		execScriptOnExtJsComponent("extCmp.fireEvent( 'select', extCmp, extCmp.store.getAt(" + i + "), " + i + " )");
+		execScriptOnExtJsCmp("extCmp.setValue(extCmp.store.getAt(" + i + ").get(extCmp.valueField) )");
+		execScriptOnExtJsCmp("extCmp.fireEvent( 'select', extCmp, extCmp.store.getAt(" + i + "), " + i + " )");
 		//blur();
 	}
 	
@@ -248,7 +248,7 @@ public class ComboBox extends Component {
 	 * Could the text input web element be a TextField component instead?
 	 */
 	protected void setListDynId() {
-		listDynId = (String) execScriptOnElement(FUNCTION_TOP_ELEMENT_TO_EXT_JS_CMP 
+		listDynId = (String) execScriptOnElement(SCRIPT_TOP_ELEMENT_TO_EXT_JS_CMP 
 				+ " extCmp.expand(); return extCmp.listKeyNav.boundList.id;", getTextInput());
 	}
 	
@@ -261,8 +261,8 @@ public class ComboBox extends Component {
 	 */
 	public String setValue(final String value) {
 		focus();
-		evalTrue("extCmp.setValue( '" + value + "' )");
-		execScriptOnExtJsComponent("extCmp.fireEvent( 'select', extCmp, extCmp.store.getById('" + value + "'), extCmp.store.indexOfId('" + value + "') )");
+		execScriptOnExtJsCmp("extCmp.setValue( '" + value + "' )");
+		execScriptOnExtJsCmp("extCmp.fireEvent( 'select', extCmp, extCmp.store.getById('" + value + "'), extCmp.store.indexOfId('" + value + "') )");
 		blur();
 		return value;
 	}
@@ -275,8 +275,8 @@ public class ComboBox extends Component {
 	public void setValue(final String value, final String fieldName) {
 		focus();
 		final Integer index = findInStore(fieldName, value);
-		execScriptOnExtJsComponent("extCmp.setValue(extCmp.store.getAt(" + index + ").get(extCmp.valueField) )");
-		execScriptOnExtJsComponent("extCmp.fireEvent( 'select', extCmp, extCmp.store.getAt(" + index + "), " + index + " )");
+		execScriptOnExtJsCmp("extCmp.setValue(extCmp.store.getAt(" + index + ").get(extCmp.valueField) )");
+		execScriptOnExtJsCmp("extCmp.fireEvent( 'select', extCmp, extCmp.store.getAt(" + index + "), " + index + " )");
 		blur();
 	}
 }

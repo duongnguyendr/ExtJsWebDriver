@@ -44,7 +44,7 @@ public class ButtonComponentTest {
 		final Window window = new Window(driver, ExtJSQueryType.ComponentQuery, "[text='test']");
 		assertNotNull(window);
 		
-		Component comp = window.findComponentIn(ExtJSQueryType.ComponentQuery, "[text='OK']");
+		ExtJSComponent comp = window.findComponentIn(ExtJSQueryType.ComponentQuery, "[text='OK']");
 		assertNotNull(comp);
 	}
 	
@@ -67,7 +67,7 @@ public class ButtonComponentTest {
 		assertEquals("window.Ext.getCmp('win_id')", result.getExpression());
 		assertEquals(false, result.hidden());
 		assertEquals("//*[@id='win_id']", result.getXPath());
-		assertEquals(true, result.waitForVisible());
+		assertEquals(true, result.waitForIsVisible());
 	}
 	
 }

@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 /**
  * TabPanel represent Ext TabPanel (The Master tab Panel) So if search for specific tab inside a tabPanel the function will return the master tab panel
  */
-public class TabPanel extends Component {
+public class TabPanel extends ExtJSComponent {
 	
 	public TabPanel(WebDriver driver, ExtJSQueryType queryType, String query, final Integer tabIndex) {
 		super(driver, queryType, query);
@@ -27,16 +27,16 @@ public class TabPanel extends Component {
 	 * try to collapse the selected tab
 	 */
 	public void collapse() {
-		evalTrue(".collapse()");
-		waitForEvalTrue(".collapsed == true");
+		execScriptOnExtJsCmp("extCmp.collapse()");
+		waitForExecScriptOnExtJSCmpToReturnTrue("return extCmp.collapsed == true");
 	}
 	
 	/**
 	 * try to expend the selected tab
 	 */
 	public void expand() {
-		evalTrue(".expand()");
-		waitForEvalTrue(".collapsed == false");
+		execScriptOnExtJsCmp("return extCmp.expand()");
+		waitForExecScriptOnExtJSCmpToReturnTrue("return extCmp.collapsed == false");
 	}
 	
 	/**
@@ -72,7 +72,8 @@ public class TabPanel extends Component {
 	 * @return String[]
 	 */
 	public String[] getKeys() {
-		return getEval("data.keys").split(",");
+		String keys = String.valueOf(execScriptOnExtJsCmp("return extCmp.data.keys"));
+		return keys.split(",");
 	}
 	
 	/**

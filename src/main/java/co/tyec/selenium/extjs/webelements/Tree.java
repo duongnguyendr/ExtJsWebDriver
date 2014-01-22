@@ -4,7 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class Tree extends Component {
+public class Tree extends ExtJSComponent {
 	
 	public Tree(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);
@@ -72,8 +72,7 @@ public class Tree extends Component {
 	 * @return boolean
 	 */
 	public boolean contains(final String id) {
-		final String eval = getEval(".nodeHash['" + id + "'] != null");
-		return Boolean.parseBoolean(eval);
+		return execScriptOnExtJsCmpReturnBoolean("return extCmp.nodeHash['" + id + "'] != null");
 	}
 	
 }

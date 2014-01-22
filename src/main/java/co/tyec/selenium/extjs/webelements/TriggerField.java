@@ -3,7 +3,7 @@ package co.tyec.selenium.extjs.webelements;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class TriggerField extends Component {
+public class TriggerField extends ExtJSComponent {
 	
 	public TriggerField(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);

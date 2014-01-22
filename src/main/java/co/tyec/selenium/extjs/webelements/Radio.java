@@ -3,7 +3,7 @@ package co.tyec.selenium.extjs.webelements;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class Radio extends Component {
+public class Radio extends ExtJSComponent {
 	public Radio(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);
 	}
@@ -18,7 +18,7 @@ public class Radio extends Component {
 	 * @return boolean
 	 */
 	public boolean isChecked() {
-		return evalTrue(".checked");
+		return execScriptOnExtJsCmpReturnBoolean("return extCmp.checked");
 	}
 	
 }

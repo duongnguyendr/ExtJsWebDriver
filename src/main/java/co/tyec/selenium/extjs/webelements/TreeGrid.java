@@ -10,7 +10,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class TreeGrid extends Component {
+public class TreeGrid extends ExtJSComponent {
 	
 	public TreeGrid(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);
@@ -99,8 +99,7 @@ public class TreeGrid extends Component {
 	 * @return boolean
 	 */
 	public boolean contains(final String id) {
-		final String eval = getEval(".nodeHash['" + id + "'] != null");
-		return Boolean.parseBoolean(eval);
+		return execScriptCleanReturnBoolean("return extCmp.nodeHash['" + id + "'] != null");
 	}
 	
 	/**
@@ -117,6 +116,6 @@ public class TreeGrid extends Component {
 	 * Method whaitForloading.
 	 */
 	public void waitForloading() {
-		waitForTreeLoadingMask("loading-mask");
+		waitForTreeLoadingMaskToDisappear("loading-mask");
 	}
 }

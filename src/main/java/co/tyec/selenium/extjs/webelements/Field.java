@@ -4,12 +4,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import co.tyec.selenium.extjs.webelements.ExtJSQueryType;
-
 /**
  * @author Taylor
  */
-public class Field extends Component {
+public class Field extends ExtJSComponent {
 	
 	public Field(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);
@@ -17,13 +15,6 @@ public class Field extends Component {
 	
 	public Field(WebDriver driver, WebElement topLevel) {
 		super(driver, topLevel);
-	}
-	
-	/**
-	 * Method resetValue.
-	 */
-	public void resetValue() {
-		evalTrue("el.setValue( '' )");
 	}
 	
 	/**
@@ -36,35 +27,21 @@ public class Field extends Component {
 	}
 	
 	/**
-	 * Sets a data value into the field and validates it. To set the value directly without validation
+	 * Returns the raw data value which may or may not be a valid, defined value.Returns the normalized data for date field
 	 * 
-	 * @param value
-	 * 
-	 * @return String
+	 * @return String - theValue
 	 */
-	public String setValue(final String value) {
-		return (String) execScriptOnExtJsComponent(String.format("return el.setValue('%s')", value));
+	public String getRawValue() {
+		return (String) execScriptOnExtJsCmp("return el.getRawValue()");
 	}
 	
 	/**
-	 * Resets the current field value to the originally-loaded value and clears any validation messages
-	 */
-	public void reset() {
-		execScriptOnExtJsComponent("el.reset()");
-	}
-	
-	/**
-	 * Method type.
+	 * return the value of component
 	 * 
-	 * @param text
-	 *            String
+	 * @return String - theValue
 	 */
-	public void sendKeys(final String text) {
-		waitToLoad();
-		
-		focus();
-		topElement.sendKeys(text);
-		blur();
+	public String getValue() {
+		return (String) execScriptOnExtJsCmp("return el.getValue()");
 	}
 	
 	/**
@@ -82,20 +59,41 @@ public class Field extends Component {
 	}
 	
 	/**
-	 * return the value of component
-	 * 
-	 * @return String - theValue
+	 * Resets the current field value to the originally-loaded value and clears any validation messages
 	 */
-	public String getValue() {
-		return (String) execScriptOnExtJsComponent("return el.getValue()");
+	public void reset() {
+		execScriptOnExtJsCmp("el.reset()");
 	}
 	
 	/**
-	 * Returns the raw data value which may or may not be a valid, defined value.Returns the normalized data for date field
-	 * 
-	 * @return String - theValue
+	 * Method resetValue.
 	 */
-	public String getRawValue() {
-		return (String) execScriptOnExtJsComponent("return el.getRawValue()");
+	public void resetValue() {
+		execScriptOnExtJsCmp("extCmp.setValue( '' )");
+	}
+	
+	/**
+	 * Method type.
+	 * 
+	 * @param text
+	 *            String
+	 */
+	public void sendKeys(final String text) {
+		waitToLoad();
+		
+		focus();
+		topElement.sendKeys(text);
+		blur();
+	}
+	
+	/**
+	 * Sets a data value into the field and validates it. To set the value directly without validation
+	 * 
+	 * @param value
+	 * 
+	 * @return String
+	 */
+	public String setValue(final String value) {
+		return (String) execScriptOnExtJsCmp(String.format("return el.setValue('%s')", value));
 	}
 }

@@ -10,7 +10,7 @@ import com.outbrain.selenium.util.ExtjsUtils;
 /**
  * 
  */
-public class Grid extends Component {
+public class Grid extends ExtJSComponent {
 	
 	public Grid(WebDriver driver, ExtJSQueryType queryType, String query) {
 		super(driver, queryType, query);
@@ -38,7 +38,7 @@ public class Grid extends Component {
 	 */
 	public Grid select(final int index) {
 		waitToLoad();
-		getEval(".getSelectionModel().selectRow(" + index + ")");
+		execScriptOnExtJsCmp("extCmp.getSelectionModel().selectRow(" + index + ")");
 		
 		return this;
 	}
@@ -123,7 +123,7 @@ public class Grid extends Component {
 	 * @return boolean
 	 */
 	public boolean isSelected(final int index) {
-		return evalTrue("return el.getSelectionModel().isSelected(" + index + ")");
+		return execScriptOnExtJsCmpReturnBoolean("return extCmp.getSelectionModel().isSelected(" + index + ")");
 	}
 	
 	/**
@@ -132,7 +132,7 @@ public class Grid extends Component {
 	 * @return (int) count of grid data
 	 */
 	public int getStoreDataLength() {
-		Integer length = (Integer) execScriptOnExtJsComponent("return el.getStore().data.length");
+		Integer length = (Integer) execScriptOnExtJsCmp("return extCmp.getStore().data.length");
 		if (length == null) {
 			length = 0;
 		}
@@ -216,7 +216,7 @@ public class Grid extends Component {
 	 * @return array of id
 	 */
 	public String[] getKeys() {
-		return ((String) execScriptOnExtJsComponent("return el.getStore().data.keys")).split(",");
+		return ((String) execScriptOnExtJsCmp("return el.getStore().data.keys")).split(",");
 	}
 	
 	/**
@@ -241,7 +241,7 @@ public class Grid extends Component {
 	 * wait until the mask disappear
 	 */
 	public void waitForLoading() {
-		waitForGridLoadingMask(getComponentId());
+		waitForGridLoadingMaskToDisappear(getComponentId());
 	}
 	
 	/**
@@ -328,8 +328,8 @@ public class Grid extends Component {
 	 */
 	
 	public int findRowIndexByColumnValue(final int col, final String requiredValue) {
-		final String columnDataIndex = getEval(String.format(".getColumnModel().getDataIndex(%d)", col));
-		return Integer.parseInt(getEval(String.format(".getStore().find('%s', '%s')", columnDataIndex, requiredValue)));
+		final String columnDataIndex = (String) execScriptOnExtJsCmp(String.format("return extCmp.getColumnModel().getDataIndex(%d)", col));
+		return Integer.parseInt((String) execScriptOnExtJsCmp(String.format(".getStore().find('%s', '%s')", columnDataIndex, requiredValue)));
 	}
 	
 	/**
@@ -348,11 +348,11 @@ public class Grid extends Component {
 	/**
 	 * return the ui row count (just what the user see)
 	 * 
-	 * @return Integer
+	 * @return Long
 	 */
-	public Integer getGridRowCount() {
+	public Long getGridRowCount() {
 		waitToLoad();
-		return Integer.parseInt(getEval(".view.getRows().length"));
+		return (Long) execScriptOnExtJsCmp("return extCmp.view.getRows().length");
 	}
 	
 	/**
@@ -360,10 +360,9 @@ public class Grid extends Component {
 	 * 
 	 * @return Integer
 	 */
-	public Integer getGridStoreCount() {
+	public Long getGridStoreCount() {
 		waitToLoad();
-		return Integer.parseInt(getEval(".getStore().data.length"));
-		
+		return (Long) execScriptOnExtJsCmp("extCmp.getStore().data.length");
 	}
 	
 	/**
@@ -376,7 +375,7 @@ public class Grid extends Component {
 	 */
 	public String getColumnHeader(final Integer colIndex) {
 		
-		return getEval(String.format(".getColumnModel().getColumnHeader(%d)", colIndex));
+		return (String) execScriptOnExtJsCmp(String.format("return extCmp.getColumnModel().getColumnHeader(%d)", colIndex));
 	}
 	
 }
