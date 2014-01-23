@@ -4,6 +4,8 @@ This project was forked from SeleniumExtend at https://github.com/asaflevy/Selen
 
  The new WebElement paradigm is taken from http://www.roboqa.net/2013/03/element-object-extjs-combobox.html
  
+h1. Travis-CI
+Builds can be found at https://travis-ci.org/tayloryork/SelenuimExtend
 
 h1. Things I need to decide
 h2. JavaScript Code Managment - How should we store the JS code?
