@@ -21,16 +21,16 @@
 			<resource>
 				<directory>${project.basedir}/src/main/resources</directory>
 			</resource>
-			<!-- <resource>-->
-				<!--  Adding source to classpath to enable Multiline Strings-->
-			<!-- 	<directory>src/main/java</directory>-->
-			<!-- 	<filtering>false</filtering>-->
-			<!-- </resource>-->
-			<!-- <resource>-->
-				<!--  Adding source to classpath to enable Multiline Strings-->
-			<!-- 	<directory>src/test/java</directory>-->
-			<!-- 	<filtering>false</filtering>-->
-			<!-- </resource>-->
+			<!-- <resource> -->
+			<!-- Adding source to classpath to enable Multiline Strings -->
+			<!-- <directory>src/main/java</directory> -->
+			<!-- <filtering>false</filtering> -->
+			<!-- </resource> -->
+			<!-- <resource> -->
+			<!-- Adding source to classpath to enable Multiline Strings -->
+			<!-- <directory>src/test/java</directory> -->
+			<!-- <filtering>false</filtering> -->
+			<!-- </resource> -->
 		</resources>
 		<testResources>
 			<testResource>
@@ -47,7 +47,7 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-			<!-- <plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>2.16</version>
@@ -66,20 +66,11 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>-->
-			<!-- <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
-				<executions>
-					<execution>
-						<id>attach-test-sources</id>
-						<goals>
-							<goal>test-jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>-->
+			</plugin>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-source-plugin</artifactId> 
+				<version>2.1.2</version> <executions> <execution> <id>attach-test-sources</id> 
+				<goals> <goal>test-jar-no-fork</goal> </goals> </execution> </executions> 
+				</plugin> -->
 
 		</plugins>
 	</build>

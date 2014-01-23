@@ -159,11 +159,11 @@ public class JSExtendedWebElementIT extends BaseTest {
 	public void returnIsNullTest() {
 		WebElement el = driver.findElement(By.xpath("//body"));
 		JSExtendedWebElement jsEl = new JSExtendedWebElement(driver, el);
-		Object ret = jsEl.execScriptCleanReturnIsNull("");
-		Assert.assertNull(ret);
+		Boolean ret = jsEl.execScriptCleanReturnIsNull("");
+		Assert.assertTrue(ret);
 		
 		ret = jsEl.execScriptCleanReturnIsNull("return 1;");
-		Assert.assertNotNull(ret);
+		Assert.assertFalse(ret);
 	}
 	
 	@Test

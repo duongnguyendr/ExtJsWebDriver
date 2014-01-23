@@ -10,3 +10,4 @@ before_script:
   - sleep 3 # give xvfb some time to start
 
 #default script is....  script: mvn test
+script: mvn test integration-test
