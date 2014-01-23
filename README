@@ -27,4 +27,4 @@ h3. If we need to load any basic utilities, how do we do it, and do it well?
 
 h1. TODO:
  - Remove all methods that fire events.
- - Stack overflow issue. what is clean? just a full eval, nothing else? Then how does waitForAjax run?
+ - Make Chart type and test.
