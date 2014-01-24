@@ -2,12 +2,12 @@ language: java
 jdk:
   - openjdk6
 
-#I want to run the integration tests which require a browser. I will have to look into
-# travis-ci's options.  at minimum I'll figure out how to run phantom-js#
+# This before_script sets up xvfb, which is a fake display that can run Firefox for browser based testing.
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
 
-#default script is....  script: mvn test
+#default script is mvn test, but that would only run the 'unit' tests, *Test.java.
+# integration-test runs *IT.java, which are integration tests, and require a real selenium webdriver and browser.
 script: mvn test integration-test

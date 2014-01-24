@@ -22,6 +22,7 @@ Ext.onReady(function () {
 
     Ext.create('Ext.chart.Chart', {
         renderTo: Ext.getBody(),
+        itemId: 'myChart',
         width: 500,
         height: 300,
         animate: true,
