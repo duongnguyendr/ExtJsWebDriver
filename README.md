@@ -10,7 +10,7 @@ This project was forked from SeleniumExtend at https://github.com/asaflevy/Selen
  
 # Travis-CI
 
-[![Build Status](https://secure.travis-ci.org/tayloryork/SeleniumExtend.png)](http://travis-ci.org/tayloryork/SeleniumExtend)
+[![Build Status](https://api.travis-ci.org/tayloryork/SelenuimExtend.png)](http://travis-ci.org/tayloryork/SeleniumExtend)
 
 # TODO:
 - [x] Set up maven-surefire for "mvn integration test" and create a few tests
@@ -18,6 +18,7 @@ This project was forked from SeleniumExtend at https://github.com/asaflevy/Selen
 - [ ] Decide if we want to pre-inject the page with our javascript methods or do everything on the fly.
 - [ ] Remove all methods that fire events.
 - [ ] Make Chart class and merge in tests from another project.
+- [ ] Publish artifacts? http://datumedge.blogspot.com/2012/05/publishing-from-github-to-maven-central.html
 
 # Team Decisions
 ## JavaScript Code Managment - How should we store the JS code?
