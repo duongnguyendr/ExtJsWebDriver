@@ -1,7 +1,5 @@
 # Selenium Extend (Name tbd)
 
-[![Build Status](https://secure.travis-ci.org/tayloryork/SeleniumExtend.png)](http://travis-ci.org/tayloryork/SeleniumExtend)
-
 This project was forked from SeleniumExtend at https://github.com/asaflevy/SelenuimExtend .  SeleniumExtend was written for Selenium 1.0, and did not match the new paradigms of Selenium 2.0/Webdriver. As such, there were a few major changes:
  - Removed all references to Selenium, and replaced with WebDriver/JavascriptExecutor
  - (In Progress) Remove all fireEvent logic. This was removed from WebDriver (Though you can still do it, it's just harder) because a user is not able to fireEvents. A user can only use the mouse or keyboard.
@@ -9,8 +7,7 @@ This project was forked from SeleniumExtend at https://github.com/asaflevy/Selen
  The new WebElement paradigm is taken from http://www.roboqa.net/2013/03/element-object-extjs-combobox.html
  
 # Travis-CI
-
-[![Build Status](https://api.travis-ci.org/tayloryork/SelenuimExtend.png)](http://travis-ci.org/tayloryork/SeleniumExtend)
+[![Build Status](https://travis-ci.org/tayloryork/SeleniumExtend.png?branch=master)](https://travis-ci.org/tayloryork/SeleniumExtend)
 
 # TODO:
 - [x] Set up maven-surefire for "mvn integration test" and create a few tests
