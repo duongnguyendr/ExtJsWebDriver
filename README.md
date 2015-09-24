@@ -1,4 +1,4 @@
-# Selenium Extend (Name tbd)
+# ExtJS WebDriver (Formerly Selenium Extend)
 
 This project was forked from SeleniumExtend at https://github.com/asaflevy/SelenuimExtend .  SeleniumExtend was written for Selenium 1.0, and did not match the new paradigms of Selenium 2.0/Webdriver. As such, there were a few major changes:
  - Removed all references to Selenium, and replaced with WebDriver/JavascriptExecutor
