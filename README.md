@@ -22,10 +22,12 @@ This project was forked from SeleniumExtend at https://github.com/asaflevy/Selen
 ## JavaScript Code Managment - How should we store the JS code?
 * Should the JS just be saved in regular Strings? Ex. String code = "doSomeComplexCode()" + "lotsOfComplexLinesOfCode();
 * Or Should the JS be saved per file - /src/main/resources/.../findElement.js = "namespace.function = ...."
+
 > Save the JS in java strings for most/small functions. If they are very large, use JS Files.
 
 ## A single Javascript method to funnel all javaascript through.
 * Should you be able to do ".getEL()"; and expect it to return a stuff OR do we force "return extCmp.getEl();"
+
 > right now the answer is force "return..."
 
 ## Do we need to load any basic utility functions? Any of them?
