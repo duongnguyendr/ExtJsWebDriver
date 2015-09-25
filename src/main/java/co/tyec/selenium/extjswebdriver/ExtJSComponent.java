@@ -12,12 +12,18 @@ import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
 public class ExtJSComponent extends JSExtendedWebElement
 {
 
-    static final private String FUNCTION_findVisibleComponentElement = "ExtJsWebDriver.findVisibleComponentElement = function (query) {"
-                    + "  var queryResultArray = (window.frames[0] &&  window.frames[0].Ext) ? window.frames[0].Ext.ComponentQuery.query(query) : Ext.ComponentQuery.query(query);"
-                    + "  var single = null;" + "  Ext.Array.every(queryResultArray, function(comp) {"
-                    + "	     if (comp != null && comp.isVisible(true)){" + "	       single = comp;" + "	     }"
+    static final private String FUNCTION_findVisibleComponentElement = "ExtJsWebDriver.findVisibleComponentElement = function (query) {"//
+                    + "  var queryResultArray = (window.frames[0] &&  window.frames[0].Ext) ? window.frames[0].Ext.ComponentQuery.query(query) : Ext.ComponentQuery.query(query);"//
+                    + "  var single = null;" //
+                    + "  Ext.Array.every(queryResultArray, function(comp) {" //
+                    + "	     if (comp != null && comp.isVisible(true)){" //
+                    + "	       single = comp;"// 
+                    + "	     }"//
                     + "	     return (single != null);" /* return false will stop looping through array */
-                    + "	   });" + "  var el = (single != null ? single.getEl().dom : null);" + "  return el;" + "}";
+                    + "	   });" //
+                    + "  var el = (single != null ? single.getEl().dom : null);"//
+                    + "  return el;"//
+                    + "}";
 
     final static Logger logger = LoggerFactory.getLogger(ExtJSComponent.class);
 
@@ -26,7 +32,8 @@ public class ExtJSComponent extends JSExtendedWebElement
      */
     protected static final String SCRIPT_TOP_ELEMENT_TO_EXT_JS_CMP = "var id = el.id"
                     + ".replace(/-\\w*El$/,'')" /* -inputEl, -bodyEl, -anythingEl */
-                    + ".replace('-triggerWrap','');" + "var extCmp = Ext.getCmp(id);";
+                    + ".replace('-triggerWrap','');" //
+                    + "var extCmp = Ext.getCmp(id);";
 
     static private final String SCRIPT_TOP_ELEMENT_TO_EXT_JS_ID = SCRIPT_TOP_ELEMENT_TO_EXT_JS_CMP + ";return extCmp.getId();"; // should this be .id?
 
@@ -35,47 +42,23 @@ public class ExtJSComponent extends JSExtendedWebElement
         super(driver, by);
     }
 
-    //	/**
-    //	 * ExtJS Query that would be used in Ext.ComponentQuery.query("[name='myCheckbox']");
-    //	 */
-    //	static protected String convertQueryTypeAndQueryToScript(ExtJSQueryType queryType, String query) {
-    //		String queryScript = null;
-    //
-    //		if (queryType == null) {
-    //			return null;
-    //		} else if (queryType.equals(ExtJSQueryType.ComponentQuery)) {
-    //			queryScript = String.format("%s; %s; return ExtJsWebDriver.findVisibleComponentElement(\"%s\");",
-    //										FUNCTION_DEFINE_EXTJSWEBDRIVER, FUNCTION_findVisibleComponentElement,
-    //					query);
-    //		} else if (queryType.equals(ExtJSQueryType.GetCmp)) {
-    //			queryScript = String.format("return Ext.getCmp(\"%s\").getEl().dom;", query);
-    //		} else {
-    //			queryScript = query;
-    //		}
-    //
-    //		return queryScript;
-    //	}
-    //
     protected String extJsCmpId = null;
 
-    final String FUNCTION_getXPathTo = "ExtJsWebDriver.getXPathTo = function getXPathTo(element) {" + "    if (element.id!=='')"
-                    + "        return 'id(\"'+element.id+'\")';" + "    if (element===document.body)" + "        return element.tagName;"
-                    + "    var ix= 0;" + "    var siblings= element.parentNode.childNodes;" + "    for (var i= 0; i<siblings.length; i++) {"
-                    + "        var sibling= siblings[i];" + "        if (sibling===element)"
-                    + "            return ExtJsWebDriver.getXPathTo(element.parentNode)+'/'+element.tagName+'['+(ix+1)+']';"
-                    + "        if (sibling.nodeType===1 && sibling.tagName===element.tagName)" + "            ix++;" + "    }" + "}";
-
-    //	/**
-    //	 * @param driver
-    //	 * @param queryType
-    //	 *            - ExtJS Query that would be used in Ext.getCmp('combobox-1001');
-    //	 */
-    //	public ExtJSComponent(WebDriver driver, ExtJSQueryType queryType, String query) {
-    //		super(driver, convertQueryTypeAndQueryToScript(queryType, query));
-    //		if(queryType.equals(ExtJSQueryType.GetCmp)) {
-    //			this.extJsCmpId = query;
-    //		}
-    //	}
+    final String FUNCTION_getXPathTo = "ExtJsWebDriver.getXPathTo = function getXPathTo(element) {" //
+                    + "    if (element.id!=='')"//
+                    + "        return 'id(\"'+element.id+'\")';"//
+                    + "    if (element===document.body)" //
+                    + "        return element.tagName;"//
+                    + "    var ix= 0;" //
+                    + "    var siblings= element.parentNode.childNodes;" //
+                    + "    for (var i= 0; i<siblings.length; i++) {"//
+                    + "        var sibling= siblings[i];"//
+                    + "        if (sibling===element)"//
+                    + "            return ExtJsWebDriver.getXPathTo(element.parentNode)+'/'+element.tagName+'['+(ix+1)+']';"//
+                    + "        if (sibling.nodeType===1 && sibling.tagName===element.tagName)"// 
+                    + "            ix++;"// 
+                    + "    }" //
+                    + "}";
 
     /**
      * @param driver

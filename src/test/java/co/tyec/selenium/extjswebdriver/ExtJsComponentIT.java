@@ -14,12 +14,14 @@ import org.junit.Test;
 public class ExtJsComponentIT extends BaseIT
 {
 
-    ByExtJsGetCmp cmpIdBy;
+    ByExtJsGetCmp comboBoxByCmpId;
+
+    String comboBoxId = "combobox-1009";
 
     @Before
     public void beforeClass()
     {
-        cmpIdBy = byExtJsGetCmp.byExtJsGetCmp("combobox-1009");
+        comboBoxByCmpId = byExtJsGetCmp.byExtJsGetCmp(comboBoxId);
     }
 
     /**
@@ -30,7 +32,7 @@ public class ExtJsComponentIT extends BaseIT
     @Test
     public void testExecScriptCleanReturnBoolean() throws Exception
     {
-        final ExtJSComponent cmp_result = new ExtJSComponent(driver, cmpIdBy);
+        final ExtJSComponent cmp_result = new ExtJSComponent(driver, comboBoxByCmpId);
         final boolean result = cmp_result.execScriptCleanReturnBoolean("return true;");
 
         assertTrue(result);
@@ -42,18 +44,11 @@ public class ExtJsComponentIT extends BaseIT
      * @throws Exception
      */
     @Test
-    public void testComponent_id() throws Exception
+    public void testVisibleHidden() throws Exception
     {
-        final ExtJSComponent result = new ExtJSComponent(driver, cmpIdBy);
-
-        // add additional test code here
-        assertNotNull(result);
-        assertEquals("cmp_id", result.getComponentId());
+        final ExtJSComponent result = new ExtJSComponent(driver, comboBoxByCmpId);
         assertEquals(true, result.isVisible());
-        assertEquals(false, result.isDisabled());
-        assertEquals("window.Ext.getCmp('cmp_id')", result.getExpression());
         assertEquals(false, result.isHidden());
-        assertEquals("cmp_id", result.getComponentId());
     }
 
     /**
@@ -77,7 +72,7 @@ public class ExtJsComponentIT extends BaseIT
     @Test
     public void testGetComponentId() throws Exception
     {
-        final ExtJSComponent cmp_result = new ExtJSComponent(driver, cmpIdBy);
+        final ExtJSComponent cmp_result = new ExtJSComponent(driver, comboBoxByCmpId);
         final String result = cmp_result.getComponentId();
         assertEquals("combobox-1009", result);
     }
@@ -90,7 +85,7 @@ public class ExtJsComponentIT extends BaseIT
     @Test
     public void testGetElDom() throws Exception
     {
-        ByExtJsGetCmp by = cmpIdBy;
+        ByExtJsGetCmp by = comboBoxByCmpId;
 
         final ExtJSComponent cmp_result = new ExtJSComponent(driver, by);
         assertNotNull(cmp_result);
@@ -100,7 +95,7 @@ public class ExtJsComponentIT extends BaseIT
     @Test
     public void waitForFinishAjaxRequestTest()
     {
-        final ExtJSComponent cmp_result = new ExtJSComponent(driver, cmpIdBy);
+        final ExtJSComponent cmp_result = new ExtJSComponent(driver, comboBoxByCmpId);
         assertTrue(cmp_result.waitForFinishAjaxRequest());
     }
 }
