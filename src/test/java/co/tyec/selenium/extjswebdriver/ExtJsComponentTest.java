@@ -56,47 +56,10 @@ public class ExtJsComponentTest
 	 * @throws Exception
 	 */
 	@Test
-	public void testCleanEvalTrue() throws Exception {
-		final ExtJSComponent cmp_result = new ExtJSComponent(driver, cmpIdBy);
-		
-		Mockito.when(js.executeScript("window.Ext.getCmp('cmp_id')")).thenReturn("true");
-		final boolean result = cmp_result.execScriptCleanReturnBoolean(cmp_result.getExpression());
-		
-		assertTrue(result);
-	}
-	
-	/**
-	 * Run the boolean cleanEvalTrue(String) method test.
-	 * 
-	 * @throws Exception
-	 */
-	@Test
 	public void testCleanEvalTrue_1() throws Exception {
 		final ExtJSComponent cmp_result = new ExtJSComponent(driver, cmpIdBy); // byExtJsGetCmp.byExtJsGetCmp("null"));
 		final boolean result = cmp_result.execScriptCleanReturnBoolean(cmp_result.getExpression());
 		assertEquals(false, result);
-	}
-	
-	/**
-	 * Run the ExtJSComponent(Selenium,ComponentLocator) constructor test.
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void testComponent_id() throws Exception {
-		final ExtJSComponent result = new ExtJSComponent(driver, cmpIdBy);
-        Mockito.when(js.executeScript(Mockito.contains("isHidden"))).thenReturn(Boolean.FALSE);
-		Mockito.when(js.executeScript(Mockito.contains("disabled"))).thenReturn(Boolean.FALSE);
-		Mockito.when(js.executeScript(Mockito.contains("return extCmp == null"))).thenReturn(Boolean.FALSE);
-		
-		// add additional test code here
-		assertNotNull(result);
-		assertEquals("cmp_id", result.getComponentId());
-        assertEquals(true, result.isVisible());
-		assertEquals(false, result.isDisabled());
-		assertEquals("window.Ext.getCmp('cmp_id')", result.getExpression());
-        assertEquals(false, result.isHidden());
-		assertEquals("cmp_id", result.getComponentId());
 	}
 	
 	/**
@@ -139,18 +102,6 @@ public class ExtJsComponentTest
 		final boolean result = cmp_result.execScriptOnExtJSCmpReturnIsNull(cmp_result.getExpression());
 		
 		assertEquals(false, result);
-	}
-	
-	/**
-	 * Run the String getComponentId() method test.
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void testGetComponentId() throws Exception {
-		final ExtJSComponent cmp_result = new ExtJSComponent(driver, cmpIdBy);
-		final String result = cmp_result.getComponentId();
-		assertNotNull(result);
 	}
 	
 	/**
