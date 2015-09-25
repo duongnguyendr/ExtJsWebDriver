@@ -1,6 +1,6 @@
 language: java
 jdk:
-  - openjdk6
+  - openjdk7
 
 # This before_script sets up xvfb, which is a fake display that can run Firefox for browser based testing.
 before_script:
