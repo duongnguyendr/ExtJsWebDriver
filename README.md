@@ -5,14 +5,16 @@ This project was forked from SeleniumExtend at https://github.com/asaflevy/Selen
  - (In Progress) Remove all fireEvent logic. This was removed from WebDriver (Though you can still do it, it's just harder) because a user is not able to fireEvents. A user can only use the mouse or keyboard.
 
  The new WebElement paradigm is taken from http://www.roboqa.net/2013/03/element-object-extjs-combobox.html
- 
+ The new ByExtJsComp, ByExtJsQuery etc should be made in a likes of ByAngular from https://github.com/paul-hammant/ngWebDriver
+
 # Travis-CI
-[![Build Status](https://travis-ci.org/tayloryork/SeleniumExtend.png?branch=master)](https://travis-ci.org/tayloryork/SeleniumExtend)
+[![Build Status](https://travis-ci.org/tayloryork/ExtJsWebDriver.png?branch=master)](https://travis-ci.org/tayloryork/ExtJsWebDriver)
 
 # TODO:
 - [x] Set up maven-surefire for "mvn integration test" and create a few tests
 - [x] Set up a build system (travis-ci)
 - [x] Decide if we want to pre-inject the page with our javascript methods or do everything on the fly. (Decided - on the fly)
+- [ ] Create and implement ByExtJsComp, ByExtJsQuery a la ngWebDriver
 - [ ] Inject all Javascript on the fly
 - [ ] Remove all methods that fire events.
 - [ ] Make Chart class and merge in tests from another project.
