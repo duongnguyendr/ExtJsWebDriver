@@ -13,15 +13,23 @@ public class JSExtendedWebElement
     static final protected String FUNCTION_DEFINE_EXTJSWEBDRIVER = "if(typeof ExtJsWebDriver === \"undefined\") {ExtJsWebDriver = function(){}; ExtJsWebDriver.log = function(arg){ if(console && console.log) console.log(arg)} };";
 
     static private final String FUNCTION_highlight = "ExtJsWebDriver.highlight = function(element, timesec) {"
-                    + "  var prevBackgroundColor = element.style.backgroundColor;" + "  var prevBorder = element.style.border;"
-                    + "  element.style.backgroundColor = \"#FDFF47\";" + "  element.style.border = \"3px solid #11FF11\";"
-                    + "  window.setTimeout( function (element, prevBackgroundColor, prevBorder) {"
-                    + "    element.style.backgroundColor = prevBackgroundColor;" + "    element.style.border = prevBorder;"
-                    + "  }, timesec * 1000, element, prevBackgroundColor, prevBorder);" + "}";
+                    + "  var prevBackgroundColor = element.style.backgroundColor;"//
+                    + "  var prevBorder = element.style.border;" + "  element.style.backgroundColor = \"#FDFF47\";"//
+                    + "  element.style.border = \"3px solid #11FF11\";"
+                    + "  window.setTimeout( function (element, prevBackgroundColor, prevBorder) {"//
+                    + "    element.style.backgroundColor = prevBackgroundColor;"// 
+                    + "    element.style.border = prevBorder;"//
+                    + "  }, timesec * 1000, element, prevBackgroundColor, prevBorder);"// 
+                    + "}";
 
-    static final private String FUNCTION_htmlEscape = "ExtJsWebDriver.htmlEscape = function(str) {" + "return String(str) "
-                    + "	.replace(/&/g, '&amp;') " + "	.replace(/\"/g, '&quot;')" + "	.replace(/'/g, '&#39;')"
-                    + "	.replace(/</g, '&lt;')" + "	.replace(/>/g, '&gt;');" + "}";
+    static final private String FUNCTION_htmlEscape = "ExtJsWebDriver.htmlEscape = function(str) {"// 
+                    + "return String(str) "//
+                    + "	.replace(/&/g, '&amp;') "// 
+                    + "	.replace(/\"/g, '&quot;')"// 
+                    + "	.replace(/'/g, '&#39;')"//
+                    + "	.replace(/</g, '&lt;')"// 
+                    + "	.replace(/>/g, '&gt;');"// 
+                    + "}";
 
     /**
      * NON ZERO VALUE for sleeping when waiting.
