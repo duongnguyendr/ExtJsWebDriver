@@ -77,16 +77,6 @@ public class JSExtendedWebElement
     }
 
     /**
-     * return true if the the component is disabled
-     * 
-     * @return boolean
-     */
-    public Boolean disabled()
-    {
-        return execScriptOnTopLevelElementReturnBoolean("return el.disabled");
-    }
-
-    /**
      * Method getCleanEval.
      * 
      * @param expr
@@ -96,7 +86,14 @@ public class JSExtendedWebElement
     protected Object execScriptClean(final String expr)
     {
         waitForFinishAjaxRequest();
-        return js.executeScript(expr);
+        /**
+         * SUPER IMPORTANT:
+         * 1) If you want to get a value from the webpage, expr must return.  Ex: "return thing();"
+         * 2) If you return ANY OBJECT other than a String, Int, Decimal, or WebElement, the app will hang. Permanently.
+         *   a) Ext.getCmp() returns an Object - NOT a WebElement. Therefore "return Ext.getCmp('x-1000')" hangs.
+         */
+        Object res = js.executeScript(expr);
+        return res;
     }
 
     /**

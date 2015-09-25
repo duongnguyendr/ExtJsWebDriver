@@ -38,15 +38,4 @@ public class Button extends ExtJSComponent
         waitForDialogFailure();
     }
 
-    /**
-     * return true if the component is disabled
-     * 
-     * @return boolean
-     */
-    @Override
-    public Boolean disabled()
-    {
-        return execScriptOnExtJsCmpReturnBoolean("return extCmp.disabled");
-    }
-
 }

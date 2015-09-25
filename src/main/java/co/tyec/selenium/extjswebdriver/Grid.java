@@ -2,11 +2,10 @@
 package co.tyec.selenium.extjswebdriver;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-
-import com.outbrain.selenium.util.ExtjsUtils;
 
 /**
  * 
@@ -62,7 +61,7 @@ public class Grid extends ExtJSComponent
     public Grid clickOnItemWithClassInCell(final int row, final int col, final String cssClass)
     {
         final String cellDomExpression = getCellDomObjectExpression(row, col);
-        String xpath = ExtjsUtils.getComponentXpath(driver, cellDomExpression);
+        String xpath = getComponentXpath(driver, cellDomExpression);
         xpath += "//*[contains(@class, \"" + cssClass + "\")]";
         driver.findElement(By.xpath(xpath)).click();
 
@@ -102,7 +101,7 @@ public class Grid extends ExtJSComponent
     public Grid doubleClickOnEditableCell(final int row, final int col)
     {
         final String cellDomExpression = getCellDomObjectExpression(row, col);
-        final String xpath = ExtjsUtils.getComponentXpath(driver, cellDomExpression);
+        final String xpath = getComponentXpath(driver, cellDomExpression);
 
         WebElement cell = driver.findElement(By.xpath(xpath));
 
@@ -111,6 +110,12 @@ public class Grid extends ExtJSComponent
         actions.perform();
 
         return this;
+    }
+
+    public static String getComponentXpath(final WebDriver driver, final String element)
+    {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        return (String) js.executeScript(String.format("return window.createXPathFromElement(%s)", element));
     }
 
     /**

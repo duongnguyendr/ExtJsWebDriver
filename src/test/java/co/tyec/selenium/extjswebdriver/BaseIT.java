@@ -30,7 +30,7 @@ public class BaseIT
 
     protected ByExtJsComponentQuery byExtJsComponentQuery;
 
-    private ByExtJsGetCmp byExtJsGetCmp;
+    protected static ByExtJsGetCmp byExtJsGetCmp;
 
     /**
      * This rule states that if there is an exception, log it to logger.
@@ -115,6 +115,5 @@ public class BaseIT
         driver.navigate().to(htmlTestLocation);
         byExtJsComponentQuery = new ByExtJsComponentQuery(driver);
         byExtJsGetCmp = new ByExtJsGetCmp(driver);
-
     }
 }

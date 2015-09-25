@@ -16,14 +16,14 @@ import org.openqa.selenium.WebElement;
  */
 public class ExtJsComponentTest
 {
-	
+
 	WebDriver driver;
 	JavascriptExecutor js;
 
 	ByExtJsGetCmp byExtJsGetCmp;
 
 	ByExtJsGetCmp cmpIdBy;
-			
+
 	@Before
 	public void setUp() throws Exception {
 		driver = Mockito.mock(WebDriver.class, Mockito.withSettings().extraInterfaces(JavascriptExecutor.class));
@@ -36,17 +36,17 @@ public class ExtJsComponentTest
 		cmpIdBy = byExtJsGetCmp.byExtJsGetCmp("cmp_id");
 		Mockito.when(cmpIdBy.findElement(driver)).thenReturn(mockedEl);
 	}
-	
+
 	/**
-	 * Run the void blur() method test.
-	 * 
-	 * @throws Exception
-	 */
+     * Run the void blur() method test.
+     *
+     * @throws Exception
+     */
 	@Test
 	public void testBlur() throws Exception {
 		final ExtJSComponent result = Mockito.spy(new ExtJSComponent(driver, cmpIdBy));
 		result.blur();
-		
+
 		Mockito.verify(result).fireEvent("blur");
 	}
 	
@@ -85,20 +85,18 @@ public class ExtJsComponentTest
 	@Test
 	public void testComponent_id() throws Exception {
 		final ExtJSComponent result = new ExtJSComponent(driver, cmpIdBy);
-		Mockito.when(js.executeScript(Mockito.contains("hidden"))).thenReturn(Boolean.FALSE);
+        Mockito.when(js.executeScript(Mockito.contains("isHidden"))).thenReturn(Boolean.FALSE);
 		Mockito.when(js.executeScript(Mockito.contains("disabled"))).thenReturn(Boolean.FALSE);
 		Mockito.when(js.executeScript(Mockito.contains("return extCmp == null"))).thenReturn(Boolean.FALSE);
 		
 		// add additional test code here
 		assertNotNull(result);
 		assertEquals("cmp_id", result.getComponentId());
-		assertEquals(true, result.visible());
-		assertEquals(false, result.disabled());
+        assertEquals(true, result.isVisible());
 		assertEquals(false, result.isDisabled());
 		assertEquals("window.Ext.getCmp('cmp_id')", result.getExpression());
-		assertEquals(false, result.hidden());
+        assertEquals(false, result.isHidden());
 		assertEquals("cmp_id", result.getComponentId());
-		assertEquals(true, result.waitForIsVisible());
 	}
 	
 	/**
@@ -107,11 +105,12 @@ public class ExtJsComponentTest
 	 * @throws Exception
 	 */
 	@Test
-	public void testDisabled() throws Exception {
+    public void testIsDisabled() throws Exception
+    {
 		WebElement mockedEl = Mockito.mock(WebElement.class);
 		final ExtJSComponent cmp_result = new ExtJSComponent(driver, cmpIdBy);
 		Mockito.when(js.executeScript(Mockito.contains("disabled"), Mockito.anyVararg())).thenReturn(Boolean.TRUE);
-		assertTrue(cmp_result.disabled());
+        assertTrue(cmp_result.isDisabled());
 	}
 	
 	/**

@@ -60,6 +60,7 @@ public class ByExtJsComponentQuery extends By
         return js;
     }
 
+
     @Override
     public WebElement findElement(SearchContext searchContext)
     {

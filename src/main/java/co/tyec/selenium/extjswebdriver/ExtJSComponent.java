@@ -1,15 +1,12 @@
 
 package co.tyec.selenium.extjswebdriver;
 
-import java.util.concurrent.TimeUnit;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.outbrain.selenium.util.ThreadUtils;
 import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
 
 public class ExtJSComponent extends JSExtendedWebElement
@@ -233,13 +230,13 @@ public class ExtJSComponent extends JSExtendedWebElement
     }
 
     /**
-     * Method hidden.
+     * Method isHidden.
      * 
      * @return boolean
      */
-    public boolean hidden()
+    public boolean isHidden()
     {
-        return execScriptOnExtJsCmpReturnBoolean("return extCmp == null") || execScriptOnExtJsCmpReturnBoolean("return extCmp.hidden");
+        return execScriptOnExtJsCmpReturnBoolean("return extCmp == null") || execScriptOnExtJsCmpReturnBoolean("return extCmp.isHidden");
     }
 
     /**
@@ -253,13 +250,13 @@ public class ExtJSComponent extends JSExtendedWebElement
     }
 
     /**
-     * Method visible.
+     * Method isVisible.
      * 
      * @return boolean
      */
-    public boolean visible()
+    public boolean isVisible()
     {
-        return !hidden();
+        return !isHidden();
     }
 
     /**
@@ -331,7 +328,7 @@ public class ExtJSComponent extends JSExtendedWebElement
     }
 
     /**
-     * Wait until the Grid Loading Mask is not visible any more
+     * Wait until the Grid Loading Mask is not isVisible any more
      * 
      * @param componentId
      *            String
@@ -340,52 +337,6 @@ public class ExtJSComponent extends JSExtendedWebElement
     protected boolean waitForGridLoadingMaskToDisappear(final String componentId)
     {
         final boolean success = waitForExecScriptToReturnTrue(String.format("Ext.getCmp('%s').getEl().isMasked()", componentId));
-
-        return success;
-    }
-
-    /**
-     * Method waitForHidden.
-     */
-    public void waitForHidden()
-    {
-        final boolean success = ThreadUtils.waitFor(new ThreadUtils.WaitCondition()
-        {
-
-            @Override
-            public boolean checkCondition(final long elapsedTimeInMs)
-            {
-                return hidden();
-            }
-        }, TimeUnit.SECONDS, 15);
-
-        if (!success)
-        {
-            throw new RuntimeException("Timeout, could wait no longer for hidden component.");
-        }
-    }
-
-    /**
-     * Wait until the component is viable
-     * 
-     * @return boolean
-     */
-    public boolean waitForIsVisible()
-    {
-        final boolean success = ThreadUtils.waitFor(new ThreadUtils.WaitCondition()
-        {
-
-            @Override
-            public boolean checkCondition(final long elapsedTimeInMs)
-            {
-                return visible();
-            }
-        }, TimeUnit.SECONDS, 15);
-
-        if (!success)
-        {
-            throw new RuntimeException("Timeout");
-        }
 
         return success;
     }
