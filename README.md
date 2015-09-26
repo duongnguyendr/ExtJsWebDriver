@@ -14,8 +14,8 @@ This project was forked from SeleniumExtend at https://github.com/asaflevy/Selen
 - [x] Set up maven-surefire for "mvn integration test" and create a few tests
 - [x] Set up a build system (travis-ci)
 - [x] Decide if we want to pre-inject the page with our javascript methods or do everything on the fly. (Decided - on the fly)
-- [ ] Create and implement ByExtJsComp, ByExtJsQuery a la ngWebDriver
-- [ ] Inject all Javascript on the fly
+- [X] Create and implement ByExtJsComp, ByExtJsQuery a la ngWebDriver
+- [X] Inject all Javascript on the fly
 - [ ] Remove all methods that fire events.
 - [ ] Make Chart class and merge in tests from another project.
 - [ ] Publish artifacts? http://datumedge.blogspot.com/2012/05/publishing-from-github-to-maven-central.html
@@ -32,8 +32,8 @@ This project was forked from SeleniumExtend at https://github.com/asaflevy/Selen
 
 > right now the answer is force "return..."
 
-## Do we need to load any basic utility functions? Any of them?
-> Load as needed.
+## Do we need to load any basic utility functions?
+> None right now.
 
 ### If we need to load any basic utilities, how do we do it, and do it well?
 > Load as needed.
